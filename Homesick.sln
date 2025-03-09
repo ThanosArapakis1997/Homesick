@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35806.99
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homesick.Services.AuthAPI", "Homesick.Services.AuthAPI\Homesick.Services.AuthAPI.csproj", "{ACC34412-BA7C-4AB1-AA36-C0BB5DCDC3F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{A19F0588-59D5-4DAE-92A9-07B2E9F9F6F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{11A1C91B-2967-4786-A235-295B362A2C4B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{DC077471-693A-42AC-96A8-3B44E28E2FD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homesick.Web", "Homesick.Web\Homesick.Web.csproj", "{A4D32322-E37A-47F0-AF50-587EB8A7B13F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACC34412-BA7C-4AB1-AA36-C0BB5DCDC3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACC34412-BA7C-4AB1-AA36-C0BB5DCDC3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACC34412-BA7C-4AB1-AA36-C0BB5DCDC3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACC34412-BA7C-4AB1-AA36-C0BB5DCDC3F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4D32322-E37A-47F0-AF50-587EB8A7B13F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4D32322-E37A-47F0-AF50-587EB8A7B13F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4D32322-E37A-47F0-AF50-587EB8A7B13F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4D32322-E37A-47F0-AF50-587EB8A7B13F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACC34412-BA7C-4AB1-AA36-C0BB5DCDC3F6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A4D32322-E37A-47F0-AF50-587EB8A7B13F} = {A19F0588-59D5-4DAE-92A9-07B2E9F9F6F6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B3BBC66A-751C-470C-802C-87EF28137C70}
+	EndGlobalSection
+EndGlobal
