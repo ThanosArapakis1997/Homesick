@@ -1,6 +1,0 @@
-@Homesick.Services.HouseAPI_HostAddress = http://localhost:5192
-
-GET {{Homesick.Services.HouseAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
