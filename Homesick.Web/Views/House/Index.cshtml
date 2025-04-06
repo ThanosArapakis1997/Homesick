@@ -1,0 +1,49 @@
+﻿@using Homesick.Web.Models
+
+@model IEnumerable<ListingDto>
+    <!-- Filters -->
+    <div class="row mb-3">
+        <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Περιοχή">
+        </div>
+        <div class="col-md-2">
+            <select class="form-select">
+                <option selected>Κατηγορία</option>
+                <option value="1">Διαμέρισμα</option>
+                <option value="2">Μεζονέτα</option>
+                <option value="3">Μονοκατοικία</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Τιμή (€ Από - Έως)">
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Εμβαδόν (τ.μ.)">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-warning w-100">Φιλτράρισμα</button>
+        </div>
+    </div>
+
+@foreach (var listing in Model)
+{
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src=@listing.House.ImagePaths[0] class="img-fluid rounded-start" alt="house">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">@listing.House.Name</h5>
+                            <p class="card-text">@listing.House.Area</p>
+                            <p>@listing.House.Description</p>
+                            <p class="text-black" style="font-size:20px;">@string.Format("{0:c}", listing.House.Price)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

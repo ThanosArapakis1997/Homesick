@@ -1,0 +1,164 @@
+﻿@page "/listing/create"
+
+<MudForm @ref="form">
+    <MudGrid>
+        <MudItem xs="12" sm="3">
+            <MudPaper Class="pa-4">
+                <MudProgressCircular Value="progress" Color="Color.Primary" />
+                <MudText Typo="Typo.h6">@progress% έχει ολοκληρωθεί</MudText>
+                <MudText Typo="Typo.body1">Νέα Αγγελία</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="9">
+            <MudPaper Style="width: 1300px">
+                <MudStepper @bind-ActiveIndex="_index" ShowResetButton="true">
+                    <ChildContent>
+                        <MudStep Title="Κατηγορία Ακινήτου" SecondaryText="Κατοικία, Διαμέρισμα, Ενοικίαση" Skippable="false" CompletedChanged="@(()=> progress = 20)">
+                            <MudPaper Class="pa-4">
+                                    <MudText Typo="Typo.button">Κατηγορία Ακινήτου</MudText>
+                                    <MudRadioGroup T="string" @bind-Value="model.PropertyType">
+                                        <MudRadio T="string" Value="@SD.PropertyTypeHouse">Κατοικία</MudRadio>
+                                        <MudRadio T="string" Value="@SD.PropertyTypeLand">Γη</MudRadio>
+                                    </MudRadioGroup>
+
+                                    @if (model.PropertyType == @SD.PropertyTypeHouse)
+                                    {
+                                        <MudText Typo="Typo.button">Eίδος του ακινήτου</MudText>
+                                        <MudSelect T="string" @bind-Value="model.HouseType">
+                                            <MudSelectItem T="string" Value="@SD.HouseTypeFlat">Διαμέρισμα</MudSelectItem>
+                                            <MudSelectItem T="string" Value="@SD.HouseTypeStudio">Studio/Γκαρσονιέρα</MudSelectItem>
+                                            <MudSelectItem T="string" Value="@SD.HouseTypeMaisonette">Μεζονέτα</MudSelectItem>
+                                            <MudSelectItem T="string" Value="@SD.HouseTypeVilla">Βίλλα</MudSelectItem>
+                                            <MudSelectItem T="string" Value="@SD.HouseTypeLoft">Loft</MudSelectItem>
+                                        </MudSelect>
+                                    }
+                                    <br />
+                                    <br />
+                                    <MudText Typo="Typo.button">Διατίθεται προς</MudText>
+                                    <MudRadioGroup T="string" @bind-value="listing.ListingType">
+                                        <MudRadio T="string" Value="@SD.ListingTypeBuy">Πώληση</MudRadio>
+                                        <MudRadio T="string" Value="@SD.ListingTypeRent">Ενοικίαση</MudRadio>
+                                    </MudRadioGroup>
+
+                            </MudPaper>
+                        </MudStep>
+                        <MudStep Title="Τοποθεσία" SecondaryText="Διεύθυνση Κατοικίας" Skippable="false" CompletedChanged="@(()=> progress = 40)">
+                            <MudPaper Class="pa-4">
+                                    <MudText Typo="Typo.button">Πόλη</MudText>
+                                    <MudTextField Variant="Variant.Text" Placeholder="Πόλη" @bind-Value="model.City" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Περιοχή</MudText>
+                                    <MudAutocomplete @bind-Value="model.Area"
+                                                 SearchFunc="Search"
+                                                 Placeholder="Περιοχή"
+                                                 Clearable="true" />                                    <br />
+                                    <MudText Typo="Typo.button">Διεύθυνση</MudText>
+                                    <MudTextField Variant="Variant.Text" Placeholder="Διεύθυνση" @bind-Value="model.Address" />
+
+                            </MudPaper>
+                        </MudStep>
+                        <MudStep Title="Πληροφορίες Ακινήτου" SecondaryText="Τιμή, Εμβαδόν, Όροφος" Skippable="false" CompletedChanged="@(()=> progress = 60)">
+                            <MudPaper Class="pa-4">
+                                    <MudText Typo="Typo.button">Τίτλος Ακινήτου</MudText>
+                                    <MudTextField Variant="Variant.Text" Placeholder="Τίτλος" Required="true" RequiredError="Ο τίτλος ακινήτου είναι υποχρεωτικός" @bind-Value="model.Name" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Τιμή Ακινήτου</MudText>
+                                    <MudNumericField Variant="Variant.Text" Placeholder="€/μήνα" @bind-Value="model.Price" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Εμβαδόν Ακινήτου</MudText>
+                                    <MudNumericField Variant="Variant.Text" Placeholder="τ.μ" @bind-Value="model.FloorArea" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Όροφος</MudText>
+                                    <MudNumericField Variant="Variant.Text" @bind-Value="model.Floor" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Υπνοδωμάτια</MudText>
+                                    <MudNumericField Variant="Variant.Text" @bind-Value="model.Rooms" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Έτος Κατασκευής</MudText>
+                                    <MudNumericField Variant="Variant.Text" @bind-Value="model.ConstructionYear" />
+
+
+                                    <MudText Typo="Typo.button">Περιγραφή Ακινήτου</MudText>
+                                    <MudTextField Lines="5" AutoGrow="true" Variant="Variant.Outlined" @bind-Value="model.Description"/>
+                            </MudPaper>
+                        </MudStep>
+                        <MudStep Title="Πληροφορίες Ιδιοκτήτη" SecondaryText="Στοιχεία επικοινωνίας" Skippable="false" CompletedChanged="@(()=> progress = 80)">
+                            <MudPaper Class="pa-4">
+                                    <MudText Typo="Typo.button">Ονοματεπώνυμο</MudText>
+                                    <MudTextField Variant="Variant.Text" Placeholder="Ονοματεπώνυμο" @bind-Value="listing.Name" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Τηλέφωνο</MudText>
+                                    <MudTextField Variant="Variant.Text" InputMode="InputMode.tel" Placeholder="Τηλέφωνο" @bind-Value="listing.Phone" />
+                                    <br />
+                                    <MudText Typo="Typo.button">Email</MudText>
+                                    <MudTextField Variant="Variant.Text" InputMode="InputMode.email" Placeholder="Email" @bind-Value="listing.Email" />
+                            </MudPaper>
+                        </MudStep>
+                        <MudStep Title="Εικόνες" Skippable="false" CompletedChanged="@(()=> progress = 100)">
+                                <MudFileUpload @ref="_fileUpload" T="IReadOnlyList<IBrowserFile>" OnFilesChanged="UploadFiles" AppendMultipleFiles="true">
+                                <ActivatorContent>
+                                    <MudButton Variant="Variant.Filled"
+                                    Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Filled.CloudUpload">
+                                        Upload Files
+                                    </MudButton>
+                                </ActivatorContent>
+                            </MudFileUpload>
+                            <MudPaper Class="pa-4">                        
+
+                                @if (model.Images != null)
+                                {
+                                    <MudList T="string">
+                                        @foreach (var file in model.Images)
+                                        {
+                                            <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                                               File @file.Id
+                                            </MudListItem>
+                                        }
+                                    </MudList>                            
+                                }
+
+
+                            </MudPaper>
+                        </MudStep>
+                        <MudStep Title="Ολοκλήρωση Αγγελίας" Skippable="false">
+                            <MudPaper Class="pa-4">
+                                <MudText Typo="Typo.h6">Ολοκληρώστε την αγγελίας σας</MudText>
+                            </MudPaper>
+                        </MudStep>
+                    </ChildContent>
+                    <ActionContent Context="stepper">
+                        <MudButton OnClick="@(() => stepper.ResetAsync())">Reset</MudButton>
+                        @if (!_completed)
+                        {
+                            <MudIconButton OnClick="@(() => stepper.PreviousStepAsync())" Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Primary"/>
+                            <MudSpacer /> 
+                            @if(_index < 5)
+                            {
+                                <MudIconButton OnClick="@(() => stepper.NextStepAsync())" Icon="@Icons.Material.Filled.ArrowForward" Color="Color.Primary" />
+                            }                        
+                            else
+                            {
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HandleValidSubmit">Υποβολή</MudButton>                        
+                            }
+                        }
+                    </ActionContent>
+                </MudStepper>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudPopover Open="@_open" Fixed="true" OverflowBehavior="OverflowBehavior.FlipAlways" RelativeWidth="DropdownWidth.Relative" AnchorOrigin="Origin.CenterRight" Class="custom-popover">
+                <div class="d-flex flex-column">
+                    @if (errors != null)
+                    {
+                        @foreach (var error in errors)
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Dark">@error</MudText>
+                        }
+                    }
+                    <MudButton OnClick="@(() => _open= !_open)" Class="ml-auto mr-n3 mb-1" Color="Color.Error">OK</MudButton>
+                </div>
+            </MudPopover>
+        </MudItem>
+    </MudGrid>
+</MudForm>

@@ -1,0 +1,19 @@
+﻿@page "/login"
+@inject CustomAuthStateProvider _authenticationStateProvider;
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm Model="model">
+                <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
+                              Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" @bind-Value="model.UserName" />
+                <MudTextField T="string" Label="Κωδικός" InputType="InputType.Password" Required="true" RequiredError="Password is required!" @bind-Value="model.Password" />
+                <br />
+                <div class="d-flex align-center justify-space-between">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="LoginAsync">Login</MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+        

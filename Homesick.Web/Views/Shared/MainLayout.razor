@@ -1,0 +1,37 @@
+﻿@using Homesick.Web.Views.Home
+@using MudBlazor
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="theme"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<MudLayout>
+    <MyNavBar />
+    <MudDrawer @bind-Open="@_drawerOpen">
+            <MyNavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            @Body
+            <HomePage/>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = false;
+    private MudTheme theme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#008080", // Custom Teal Color
+            Secondary = "#FFFFFF"
+        }
+    };
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

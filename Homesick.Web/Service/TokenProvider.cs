@@ -1,7 +1,7 @@
 ﻿using Homesick.Web.Service.IService;
 using Homesick.Web.Utility;
 
-namespace Homesick.Web.Service
+namespace Homesick.UI.Service
 {
     public class TokenProvider : ITokenProvider
     {

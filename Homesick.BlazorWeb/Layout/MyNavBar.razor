@@ -1,0 +1,61 @@
+﻿@using MudBlazor
+@* @inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
+ *@
+<MudAppBar Color="Color.Transparent">
+    <MudImage Src="images/Housing_logo.jpg" Width="50" Height="50" Alt="Logo" Elevation="25" Class="rounded-lg ma-4" />
+    <MudText Color="Color.Secondary" Typo="Typo.h6">My Application</MudText>
+    <MudSpacer />
+
+@*     @if (authState?.User.Identity?.IsAuthenticated == true)
+    {
+        <ul class="navbar-nav ms-auto list-unstyled d-flex align-items-center">
+            <li class="nav-item me-3">
+                Hello, @authState.User.Identity.Name
+            </li>
+        </ul>
+        <ul class="navbar-nav ms-auto list-unstyled d-flex align-items-center">
+
+            <li class="nav-item">
+                <a class="nav-link text-white" href="Auth/logout">Logout</a>
+            </li>
+        </ul>
+    }
+    else
+    {
+        <ul class="navbar-nav ms-auto list-unstyled d-flex align-items-center">
+            <li class="nav-item me-3">
+                <a class="nav-link" href="Auth/login">
+                    <MudText Color="Color.Secondary" Typo="Typo.body1">Login</MudText>
+                </a>
+            </li>
+        </ul>        
+        <ul class="navbar-nav ms-auto list-unstyled d-flex align-items-center">
+            <li class="nav-item">
+                <a class="nav-link" href="Auth/register">
+                    <MudText Color="Color.Secondary" Typo="Typo.body1">Register</MudText>
+                </a>
+            </li>
+        </ul>
+    } *@
+
+</MudAppBar>
+
+@code {
+    bool _drawerOpen = false;
+    
+    private bool _isDarkMode;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    // private AuthenticationState authState;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    // }
+
+}

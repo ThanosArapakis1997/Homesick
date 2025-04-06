@@ -32,7 +32,7 @@ namespace Homesick.Web.Service
                 {
                     throw new Exception("HttpClientFactory is null. Ensure it is registered in the DI container.");
                 }
-                HttpClient client = _httpClientFactory.CreateClient("MangoAPI");
+                HttpClient client = _httpClientFactory.CreateClient("HomesickAPI");
                 HttpRequestMessage message = new();
                 message.Headers.Add("Accept", "application/json");
 

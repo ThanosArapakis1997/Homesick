@@ -15,6 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homesick.Web", "Homesick.Web\Homesick.Web.csproj", "{A4D32322-E37A-47F0-AF50-587EB8A7B13F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homesick.GatewaySolution", "Homesick.GatewaySolution\Homesick.GatewaySolution.csproj", "{AEC233B6-6EE8-43C5-A27F-98AADC4CAB7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homesick.Services.ListingAPI", "Homesick.Services.ListingAPI\Homesick.Services.ListingAPI.csproj", "{E7AA88EC-360B-4AA8-9512-F24AB0983F7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homesick.UI", "Homesick.UI\Homesick.UI.csproj", "{3D742BE4-D156-4CBC-9118-61B3F8E3C18F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homesick.Services.Upload", "Homesick.Services.Upload\Homesick.Services.Upload.csproj", "{5FEF4D7C-E1E1-4C3F-8DEF-61531D8343EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +37,22 @@ Global
 		{A4D32322-E37A-47F0-AF50-587EB8A7B13F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4D32322-E37A-47F0-AF50-587EB8A7B13F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4D32322-E37A-47F0-AF50-587EB8A7B13F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEC233B6-6EE8-43C5-A27F-98AADC4CAB7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEC233B6-6EE8-43C5-A27F-98AADC4CAB7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEC233B6-6EE8-43C5-A27F-98AADC4CAB7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEC233B6-6EE8-43C5-A27F-98AADC4CAB7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7AA88EC-360B-4AA8-9512-F24AB0983F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7AA88EC-360B-4AA8-9512-F24AB0983F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7AA88EC-360B-4AA8-9512-F24AB0983F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7AA88EC-360B-4AA8-9512-F24AB0983F7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D742BE4-D156-4CBC-9118-61B3F8E3C18F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D742BE4-D156-4CBC-9118-61B3F8E3C18F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D742BE4-D156-4CBC-9118-61B3F8E3C18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D742BE4-D156-4CBC-9118-61B3F8E3C18F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FEF4D7C-E1E1-4C3F-8DEF-61531D8343EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FEF4D7C-E1E1-4C3F-8DEF-61531D8343EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FEF4D7C-E1E1-4C3F-8DEF-61531D8343EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FEF4D7C-E1E1-4C3F-8DEF-61531D8343EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +60,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{ACC34412-BA7C-4AB1-AA36-C0BB5DCDC3F6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{A4D32322-E37A-47F0-AF50-587EB8A7B13F} = {A19F0588-59D5-4DAE-92A9-07B2E9F9F6F6}
+		{AEC233B6-6EE8-43C5-A27F-98AADC4CAB7C} = {11A1C91B-2967-4786-A235-295B362A2C4B}
+		{E7AA88EC-360B-4AA8-9512-F24AB0983F7D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{3D742BE4-D156-4CBC-9118-61B3F8E3C18F} = {A19F0588-59D5-4DAE-92A9-07B2E9F9F6F6}
+		{5FEF4D7C-E1E1-4C3F-8DEF-61531D8343EF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3BBC66A-751C-470C-802C-87EF28137C70}

@@ -18,16 +18,16 @@ namespace Homesick.Services.AuthAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequestDto model)
+        public async Task<ResponseDto> Register([FromBody] RegistrationRequestDto model)
         {
             var errorMessage = await _authService.Register(model);
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 _response.IsSuccess = false;
                 _response.Message = errorMessage;
-                return BadRequest(_response);
+                return _response;
             }
-            return Ok(_response);
+            return _response;
         }
 
         [HttpPost("login")]
@@ -55,7 +55,6 @@ namespace Homesick.Services.AuthAPI.Controllers
                 return BadRequest(_response);
             }
             return Ok(_response);
-
         }
     }
 }

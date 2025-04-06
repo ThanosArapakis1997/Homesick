@@ -1,0 +1,32 @@
+﻿@page "/register"
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm Model="registrationRequest" @ref="form">
+                <MudTextField T="string" Label="Όνομα Χρήστη" Required="true" RequiredError="User name is required!" @bind-Value="registrationRequest.Name"/>
+                <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
+                              Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" @bind-Value="registrationRequest.Email"/>
+                <MudTextField T="string" Label="Κωδικός" HelperText="Choose a strong password" @ref="pwField1"
+                              InputType="InputType.Password"
+                              Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                              RequiredError="Password is required!" @bind-Value="registrationRequest.Password"/>
+                <MudTextField T="string"
+                              Label="Κωδικός" HelperText="Repeat the password" InputType="InputType.Password"
+                              Validation="@(new Func<string, string>(PasswordMatch))" />
+
+                <MudTextField T="string" Label="Τηλέφωνο" Required="true" RequiredError="Το τηλέφωνο είναι απαραίτητο πεδίο!" @bind-Value="registrationRequest.PhoneNumber"/>
+                <br />
+                <MudSelect T="string" @bind-Value="registrationRequest.Role" Label="Ρόλος Χρήστη">
+                    <MudSelectItem T="string" Value="@SD.RoleAdmin">@SD.RoleAdmin</MudSelectItem>
+                    <MudSelectItem T="string" Value="@SD.RoleCustomer">@SD.RoleCustomer</MudSelectItem>
+                </MudSelect>
+                <br />
+
+                <div class="d-flex align-center justify-space-between">
+                    <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="I agree with the terms and Conditions!" @bind-Value="@success" />
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" @onclick="RegisterAsync">Register</MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>   
+</MudGrid>

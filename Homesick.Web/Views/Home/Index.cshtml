@@ -1,5 +1,77 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using Homesick.Web.Models
+@using Homesick.Web.Utility
+@using Homesick.Web.Views.Home
+@model FilterDto
+<section class="hero">
+    <h2>Βρες το σπίτι των ονείρων σου</h2>
+</section>
+<form>
+    <div class="container mt-4">
+        <div class="search-bar">
+            <input asp-for="Area" class="form-control" placeholder="Περιοχή"> 
+            <button type="button" id="price-header" class="form-control" onclick="togglePriceDropdown()">Τιμή</button>
+            <select id="LowPriceDropdown" asp-for="LowPrice" style="display:none">
+                    <option value="">Αδιάφορο</option>
+                    <option value="10000">10.000</option>
+                    <option value="20000">20.000</option>
+                    <option value="30000">30.000</option>
+                    <option value="40000">40.000</option>
+            </select>
+            <select id="HighPriceDropdown" asp-for="HighPrice" style="display:none">
+                    <option value="">Αδιάφορο</option>
+                    <option value="10000">10.000</option>
+                    <option value="20000">20.000</option>
+                    <option value="30000">30.000</option>
+                    <option value="40000">40.000</option>
+            </select>
+            <input asp-for="FloorAreaLow" type="number" class="form-control" placeholder="Εμβαδόν (τ.μ.)">
+            <input type="submit" asp-action="FilteredListings" class="btn btn-orange">
+        </div>
+
+        </div>
+</form>
+
+<form>
+    <div class="container row">
+
+        @if (ViewBag.Listings != null)
+        {
+            <h4 class="text-dark-emphasis">Οι Αγγελίες μου</h4>
+            @foreach (var listing in ViewBag.Listings)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="p-0 my-3 border rounded">
+                    <div class="card">
+                         <div class="card-body">
+                            <div class="d-flex justify-content-between py-2">
+                                <span class="text-danger" style="font-size:20px;">@string.Format("{0:c}", listing.House.Price)</span>
+                                <span class="badge bg-info text-white p-2">@listing.House.Area</span>
+                            </div>
+                            <p class="card-text">@Html.Raw(listing.House.Description)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        }
+    </div>
+</form>
+
+<script>
+    function togglePriceDropdown() {
+        let lowDropdown = document.getElementById("LowPriceDropdown");
+        let highDropdown = document.getElementById("HighPriceDropdown");
+
+        if (lowDropdown.style.display === "none" || lowDropdown.style.display === "") {
+            lowDropdown.style.display = "block";
+        } else {
+            lowDropdown.style.display = "none";
+        } 
+
+        if (highDropdown.style.display === "none" || highDropdown.style.display === "") {
+            highDropdown.style.display = "block";
+        } else {
+            highDropdown.style.display = "none";
+        }
+    }
+</script>

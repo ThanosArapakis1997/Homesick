@@ -1,7 +1,10 @@
 using Homesick.Web.Service;
 using Homesick.Web.Service.IService;
+using Homesick.Web.Service.RetrievingServices;
 using Homesick.Web.Utility;
+using Homesick.Web.Views;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +15,19 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
+builder.Services.AddHttpClient<IListingService, ListingService>();
 
 builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddScoped<IListingService, ListingService>();
+
+
+//Retrieving Services
+builder.Services.AddSingleton<FilteredListingsService>();
+
+builder.Services.AddMudServices();
+builder.Services.AddServerSideBlazor();
+
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -29,6 +41,8 @@ var app = builder.Build();
 
 
 SD.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"];
+SD.ListingAPIBase = builder.Configuration["ServiceUrls:ListingAPI"];
+SD.WebAPIBase = builder.Configuration["ServiceUrls:WebAPI"];
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -46,9 +60,11 @@ app.UseRouting();
 app.UseAuthorization();
 app.UseAuthentication();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
+app.MapBlazorHub(); // Map Blazor Hub
+app.MapFallbackToPage("/_Host"); // Fallback to _Host.cshtml
 
 app.Run();

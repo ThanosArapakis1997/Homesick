@@ -1,0 +1,6 @@
+@Homesick.Services.Upload_HostAddress = http://localhost:5167
+
+GET {{Homesick.Services.Upload_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

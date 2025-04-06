@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="theme"/>
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout Style="background-color: aliceblue;">
+    <MyNavBar/>    
+    <MudMainContent Class="mt-16 pa-4">
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private MudTheme theme = new MudTheme()
+        {
+            PaletteLight = new PaletteLight()
+            {
+                Primary = "#008080", // Custom Teal Color
+                Secondary = "#FFFFFF"
+            }
+            
+        };
+}

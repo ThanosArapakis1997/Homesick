@@ -1,0 +1,120 @@
+﻿@page "/"
+
+<MudImage Src="images/BackgroundImage.jpg" ObjectFit=ObjectFit.Cover Style="height: 500px; width: 100%; position: absolute; top: 0; left: 0;" Alt="HomepageImage" />
+
+<MudForm Model="@model" Style="margin-top: 55vh; align-self:center">
+    <MudGrid Justify="Justify.Center" Spacing="2">
+        <MudItem xs="12" md="2">
+                <MudAutocomplete @bind-Value="model.Area"
+                                 SearchFunc="Search"
+                                 Label="Περιοχή"
+                                 Placeholder="Περιοχή"
+                                 Clearable="true" />
+        </MudItem>
+
+        <MudItem xs="7" md="2">
+            <MudInputLabel>Τιμή</MudInputLabel>
+            <MudButton Variant="Variant.Text" Color="Color.Default" @onclick="TogglePriceDropdown">
+                Από - Έως
+            </MudButton>
+
+            <MudCollapse Expanded="showPriceDropdown">
+                <MudSelect T="double?" @bind-Value="model.LowPrice" Label="Ελάχιστη Τιμή">
+                    <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                    <MudSelectItem T="double?" Value="10000">10.000</MudSelectItem>
+                    <MudSelectItem T="double?" Value="20000">20.000</MudSelectItem>
+                    <MudSelectItem T="double?" Value="30000">30.000</MudSelectItem>
+                    <MudSelectItem T="double?" Value="40000">40.000</MudSelectItem>
+                </MudSelect>
+
+                <MudSelect T="double?" @bind-Value="model.HighPrice" Label="Μέγιστη Τιμή">
+                    <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                    <MudSelectItem T="double?" Value="10000">10.000</MudSelectItem>
+                    <MudSelectItem T="double?" Value="20000">20.000</MudSelectItem>
+                    <MudSelectItem T="double?" Value="30000">30.000</MudSelectItem>
+                    <MudSelectItem T="double?" Value="40000">40.000</MudSelectItem>
+                </MudSelect>
+            </MudCollapse>
+        </MudItem>
+
+        <MudItem xs="7" md="2">
+            <MudInputLabel>Εμβαδόν (τ.μ.)</MudInputLabel>
+            <MudButton Variant="Variant.Text" Color="Color.Transparent" @onclick="ToggleFloorAreaDropdown">
+                Από - Έως
+            </MudButton>
+            <MudCollapse Expanded="showFloorAreaDropdown">
+                <MudSelect T="int?" @bind-Value="model.FloorAreaLow" Label="Ελάχιστη Τιμή">
+                    <MudSelectItem T="int?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                    <MudSelectItem T="int?" Value=" 30">30</MudSelectItem>
+                    <MudSelectItem T="int?" Value=" 50">50</MudSelectItem>
+                    <MudSelectItem T="int?" Value="70">70</MudSelectItem>
+                    <MudSelectItem T="int?" Value="100">100</MudSelectItem>
+                </MudSelect>
+
+                <MudSelect T="int?" @bind-Value="model.FloorAreaHigh" Label="Μέγιστη Τιμή">
+                    <MudSelectItem T="int?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                    <MudSelectItem T="int?" Value="30">30</MudSelectItem>
+                    <MudSelectItem T="int?" Value="50">50</MudSelectItem>
+                    <MudSelectItem T="int?" Value="70">70</MudSelectItem>
+                    <MudSelectItem T="int?" Value="100">100</MudSelectItem>
+                </MudSelect>
+            </MudCollapse>
+        </MudItem>
+
+        <MudItem xs="12" md="3">
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="HandleSubmit">
+                Αναζήτηση
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    private FilterDto model = new FilterDto();
+
+    private bool showPriceDropdown = false;
+    private bool showFloorAreaDropdown = false;
+    private List<string> _areas = SD.Areas;
+
+    private void TogglePriceDropdown()
+    {
+        showPriceDropdown = !showPriceDropdown;
+    }
+
+    private void ToggleFloorAreaDropdown()
+    {
+        showFloorAreaDropdown = !showFloorAreaDropdown;
+    }
+
+    private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5, token);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return _areas;
+
+        return _areas.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async Task HandleSubmit()
+    {
+        ResponseDto response = await listingService.GetFilteredListings(model);
+
+        if (response != null && response.IsSuccess)
+        {
+            List<ListingDto> Listings = JsonConvert.DeserializeObject<List<ListingDto>>(Convert.ToString(response.Result));
+
+            // Store data in the shared service
+            FilteredListingsService.SetListingsData(Listings);
+
+            // Navigate to FilteredListings
+            Navigation.NavigateTo("filtered-listings");
+        }
+        else
+        {
+            Snackbar.Add(response?.Message ?? "An error occurred", Severity.Warning);
+        }
+    }
+}

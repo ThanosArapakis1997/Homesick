@@ -1,0 +1,33 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using BlazorDownloadFile
+@using Blazored.SessionStorage
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Http
+@using Microsoft.JSInterop
+@using Homesick.UI
+@using Homesick.UI.Layout
+@using Homesick.UI.Utility;
+@using MudBlazor
+@using MudBlazor.Services
+@using Homesick.UI.Models
+@using Homesick.UI.RetrievingData
+@using Homesick.UI.Service.IService
+@using Homesick.UI.Service
+@using Newtonsoft.Json
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IListingService listingService
+@inject FilteredListings FilteredListingsService
+@inject ISessionStorageService _sessionStorage
+@inject IAuthService _authService
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider

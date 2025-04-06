@@ -1,0 +1,56 @@
+﻿@inject CustomAuthStateProvider _authenticationStateProvider;
+
+<MudAppBar Color="Color.Primary">
+    <MudImage Src="images/Housing_logo.jpg" Width="50" Height="50" Alt="Logo" Elevation="25" Class="rounded-lg ma-4" />
+    <MudButton Color="Color.Dark" Href="/"  Class="mr-4">
+        <MudText Typo="Typo.h6">Homesick</MudText>
+    </MudButton>
+    <MudSpacer />
+
+    @if(authState is not null && authState.User.Identity?.IsAuthenticated == true)
+    {
+        <MudButton Href="/listing/create" Variant="Variant.Outlined" Color="Color.Dark" Class="mr-4">Καταχώρηση Αγγελίας</MudButton>
+        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" Color="Color.Dark" Class="ml-auto" @onclick="Logout">
+            Αποσύνδεση
+        </MudButton>
+    }
+    else
+    {
+        <MudLink Href="/register" Underline="Underline.None" Typo="Typo.button" Color="Color.Dark" Class="mr-4">Εγγραφή</MudLink>
+
+        <MudLink Href="/login" Underline="Underline.None" Typo="Typo.button" Color="Color.Dark">Είσοδος</MudLink>
+    }
+</MudAppBar>
+
+@code {
+    bool _drawerOpen = false;
+    
+    private bool _isDarkMode;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private AuthenticationState authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        AuthenticationStateProvider.AuthenticationStateChanged += async (task) =>
+        {
+            authState = await task;
+            StateHasChanged(); // Forces the navbar to update
+        };
+        StateHasChanged();
+    }
+
+    private async Task Logout()
+    {
+        _sessionStorage.RemoveItemAsync("authToken");
+
+        _authenticationStateProvider.NotifyUserLogout();
+
+        Navigation.NavigateTo("/");
+    }
+}

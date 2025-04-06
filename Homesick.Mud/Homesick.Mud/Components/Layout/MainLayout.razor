@@ -1,0 +1,40 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+     <MyNavBar />
+    <MudDrawer @bind-Open="@_drawerOpen">
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            @Body
+            <Home/>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    bool _drawerOpen = false;
+    private MudTheme theme = new MudTheme()
+        {
+            PaletteLight = new PaletteLight()
+            {
+                Primary = "#008080", // Custom Teal Color
+                Secondary = "#FFFFFF"
+            }
+        };
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}
