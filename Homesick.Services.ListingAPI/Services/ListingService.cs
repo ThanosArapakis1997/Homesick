@@ -20,6 +20,15 @@ namespace Homesick.Services.ListingAPI.Services
             _queryMaker = queryMaker;
         }
 
+        public async Task<List<ListingDto>> GetAllListings()
+        {
+            var listings = await _db.Listings
+                .Include(l => l.House)
+                .ThenInclude(h => h.Images) // Include images if needed
+                .ToListAsync();
+            return _mapper.Map<List<ListingDto>>(listings);
+        }
+
         public Task<ListingDto> GetListingByIdAsync(int id)
         {
             throw new NotImplementedException();

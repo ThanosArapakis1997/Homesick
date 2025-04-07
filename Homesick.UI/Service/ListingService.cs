@@ -39,6 +39,15 @@ namespace Homesick.UI.Service
                 Data = listing,
                 Url = SD.ListingAPIBase + "/api/listing/CreateListing"
             });
-        }      
+        }
+
+        public async Task<ResponseDto?> GetAllListings()
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = SD.ListingAPIBase + "/api/listing"
+            });
+        }
     }
 }

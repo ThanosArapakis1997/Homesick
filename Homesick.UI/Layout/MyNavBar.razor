@@ -7,32 +7,38 @@
     </MudButton>
     <MudSpacer />
 
-    @if(authState is not null && authState.User.Identity?.IsAuthenticated == true)
-    {
-        <MudButton Href="/listing/create" Variant="Variant.Outlined" Color="Color.Dark" Class="mr-4">Καταχώρηση Αγγελίας</MudButton>
-        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" Color="Color.Dark" Class="ml-auto" @onclick="Logout">
-            Αποσύνδεση
-        </MudButton>
-    }
-    else
-    {
-        <MudLink Href="/register" Underline="Underline.None" Typo="Typo.button" Color="Color.Dark" Class="mr-4">Εγγραφή</MudLink>
+    <MudMenu Dense Variant="Variant.Text" Size="Size.Large" Color="Color.Inherit" Icon="@Icons.Material.Filled.Face4">
+        @if (authState is not null && authState.User.Identity?.IsAuthenticated == true)
+        {
+            @if (role.Equals(SD.RoleCustomer, StringComparison.CurrentCultureIgnoreCase))
+            {
+                <MudMenuItem Href="/profile" Icon="@Icons.Material.TwoTone.SwitchAccount" IconColor="Color.Primary" Label="Προφίλ" />
+            }
+        
+            <MudMenuItem Icon="@Icons.Material.TwoTone.Logout" OnClick="Logout" IconColor="Color.Primary" Label="Αποσύνδεση" />
+        }
+        else
+        {
+            <MudMenuItem Href="/login" Icon="@Icons.Material.TwoTone.Login" IconColor="Color.Primary" Label="Είσοδος" />
 
-        <MudLink Href="/login" Underline="Underline.None" Typo="Typo.button" Color="Color.Dark">Είσοδος</MudLink>
+            <MudMenuItem Href="/register" Icon="@Icons.Material.TwoTone.PersonAdd" IconColor="Color.Primary" Label="Εγγραφή" />
+        }
+
+    </MudMenu>
+
+    @if (role.Equals(SD.RoleAdmin, StringComparison.CurrentCultureIgnoreCase))
+    {
+        <MudMenu Dense Variant="Variant.Text" Size="Size.Medium"Color="Color.Inherit" Icon="@Icons.Material.TwoTone.MoreVert">
+            <MudMenuItem Href="/preview" Icon="@Icons.Material.TwoTone.Preview" IconColor="Color.Primary" Label="Επισκόπηση Αγγελιών" />
+            <MudMenuItem Href="/logger" Icon="@Icons.Material.TwoTone.AdminPanelSettings" IconColor="Color.Primary" Label="Logs" />
+        </MudMenu>
     }
 </MudAppBar>
 
 @code {
-    bool _drawerOpen = false;
-    
-    private bool _isDarkMode;
-
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
 
     private AuthenticationState authState;
+    private string role = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,15 +46,18 @@
         AuthenticationStateProvider.AuthenticationStateChanged += async (task) =>
         {
             authState = await task;
+
+            var user = authState.User;
+
+            if (user.Identity.IsAuthenticated) role = user.FindFirst("role")?.Value;
             StateHasChanged(); // Forces the navbar to update
         };
-        StateHasChanged();
+        StateHasChanged();       
+        
     }
 
     private async Task Logout()
     {
-        _sessionStorage.RemoveItemAsync("authToken");
-
         _authenticationStateProvider.NotifyUserLogout();
 
         Navigation.NavigateTo("/");

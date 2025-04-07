@@ -1,0 +1,88 @@
+﻿@page "/profile"
+@using MudBlazor
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-10">
+    <MudPaper Elevation="3" Class="pa-6 rounded-2xl d-flex flex-column align-center text-center">
+        <MudAvatar Size="Size.Large" Class="mb-4" Img="images/Housing_logo.jpg" />
+        <MudText Typo="Typo.h5" Class="mb-1">Χρήστης</MudText>
+        <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-4">@email</MudText>
+
+        <MudDivider Class="my-4" />
+
+        <MudGrid GutterSize="3">
+            <MudItem xs="4">
+                <MudPaper Class="pa-2 rounded-lg text-center" Elevation="1">
+                    <MudText Typo="Typo.subtitle1">Αγγελίες</MudText>
+                    <MudText Typo="Typo.h6">@listings.Count</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="4">
+                <MudPaper Class="pa-2 rounded-lg text-center" Elevation="1">
+                    <MudText Typo="Typo.subtitle1">Ακόλουθοι</MudText>
+                    <MudText Typo="Typo.h6">1.2K</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="4">
+                <MudPaper Class="pa-2 rounded-lg text-center" Elevation="1">
+                    <MudText Typo="Typo.subtitle1">Ακολουθεί</MudText>
+                    <MudText Typo="Typo.h6">180</MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-4" />        
+
+        <MudGrid>
+            <MudItem xs="12" sm="12">
+                <MudAlert Severity="Severity.Normal">
+                    <MudText Typo="Typo.body2">Οι Αγγελίες σας</MudText>
+                </MudAlert>
+                @foreach (ListingDto item in listings)
+                {
+                    <MudCard Class="mb-4">
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudCarousel Style="height:300px; width:300px;" AutoCycle="false" TData="object">
+                                        @foreach (ImageDto image in item.House.Images)
+                                        {
+                                            <MudCarouselItem Class="aspect-ratio-container">
+                                                <MudImage Src="@image.Data" ObjectFit="ObjectFit.Contain" Class="aspect-ratio-image" />
+                                            </MudCarouselItem>
+                                        }
+                                    </MudCarousel>
+                                </MudItem>
+                                <MudItem xs="12" sm="4" Class="pl-4">
+                                    <MudText Typo="Typo.h5">@item.House.Name</MudText>
+                                    <div style="max-height:220px; overflow:hidden; text-overflow: ellipsis;">
+                                        <MudText Typo="Typo.body2" Style="display:-webkit-box; -webkit-line-clamp:10; -webkit-box-orient:vertical; overflow:hidden;">
+                                            @item.House.Description
+                                        </MudText>
+                                    </div>
+
+                                    <MudGrid Class="mt-2">
+                                        <MudItem xs="3">
+                                            <MudIcon Icon="@Icons.Material.Filled.MeetingRoom" /> @item.House.Rooms Δωμ.
+                                        </MudItem>
+                                        <MudItem xs="3">
+                                            <MudIcon Icon="@Icons.Material.Filled.Layers" /> @item.House.Floor Όρ.
+                                        </MudItem>
+                                    </MudGrid>
+
+                                    <MudText Typo="Typo.h6" Class="mt-3" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
+
+                                </MudItem>
+                                <MudItem xs="12" sm="2" Class="pl-4">
+                                    <MudIconButton Icon="@Icons.Material.Rounded.Edit"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Rounded.Delete"></MudIconButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                    </MudCard>
+                }
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+</MudContainer>
+
+

@@ -23,15 +23,48 @@ namespace Homesick.Services.ListingAPI.Controllers
             _listingService = listingService;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "ΔΙΑΧΕΙΡΙΣΤΉΣ")]
+        public async Task<ResponseDto> GetAllListings()
+        {
+            try
+            {
+                List<ListingDto> listings = await _listingService.GetAllListings();
+                if (listings == null)
+                {
+                    _response.Message = "No Listings Found";
+                    _response.IsSuccess = false;
+                }
+                else
+                {
+                    _response.Result = listings;
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
         [HttpGet("GetListings/{userId}")]
         [Authorize]
         public async Task<ResponseDto> GetUserListings(string userId)
         {
             try
             {
-                List<ListingDto> listings = await _listingService.GetListingsByUserIdAsync(userId);                
+                List<ListingDto> listings = await _listingService.GetListingsByUserIdAsync(userId);
 
-                _response.Result = listings;
+                if (listings == null)
+                {
+                    _response.Message = "No Listings Found";
+                    _response.IsSuccess = false;
+                }
+                else
+                {
+                    _response.Result = listings;
+                }
             }
             catch (Exception ex)
             {

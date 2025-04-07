@@ -106,13 +106,13 @@
                             </MudFileUpload>
                             <MudPaper Class="pa-4">                        
 
-                                @if (model.Images != null)
+                                @if (files != null)
                                 {
                                     <MudList T="string">
-                                        @foreach (var file in model.Images)
+                                        @foreach (var file in files)
                                         {
                                             <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
-                                               File @file.Id
+                                               File @file.Name
                                             </MudListItem>
                                         }
                                     </MudList>                            

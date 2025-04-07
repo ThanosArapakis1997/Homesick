@@ -1,15 +1,16 @@
 ﻿@page "/"
+@using System.Security.Claims
 
 <MudImage Src="images/BackgroundImage.jpg" ObjectFit=ObjectFit.Cover Style="height: 500px; width: 100%; position: absolute; top: 0; left: 0;" Alt="HomepageImage" />
 
 <MudForm Model="@model" Style="margin-top: 55vh; align-self:center">
     <MudGrid Justify="Justify.Center" Spacing="2">
         <MudItem xs="12" md="2">
-                <MudAutocomplete @bind-Value="model.Area"
-                                 SearchFunc="Search"
-                                 Label="Περιοχή"
-                                 Placeholder="Περιοχή"
-                                 Clearable="true" />
+            <MudAutocomplete @bind-Value="model.Area"
+            SearchFunc="Search"
+            Label="Περιοχή"
+            Placeholder="Περιοχή"
+            Clearable="true" />
         </MudItem>
 
         <MudItem xs="7" md="2">
@@ -104,10 +105,10 @@
 
         if (response != null && response.IsSuccess)
         {
-            List<ListingDto> Listings = JsonConvert.DeserializeObject<List<ListingDto>>(Convert.ToString(response.Result));
+            List<ListingDto> FilteredListings = JsonConvert.DeserializeObject<List<ListingDto>>(Convert.ToString(response.Result));
 
             // Store data in the shared service
-            FilteredListingsService.SetListingsData(Listings);
+            FilteredListingsService.SetListingsData(FilteredListings);
 
             // Navigate to FilteredListings
             Navigation.NavigateTo("filtered-listings");

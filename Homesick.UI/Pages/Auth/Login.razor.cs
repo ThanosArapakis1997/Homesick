@@ -23,7 +23,7 @@ namespace Homesick.UI.Pages.Auth
                 LoginResponseDto loginResponseDto =
                     JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(responseDto.Result));
 
-                await SignInUser(loginResponseDto);
+                _sessionStorage.SetItemAsync("jwt", loginResponseDto.Token);
 
                 var authStateProvider = _authenticationStateProvider;
                 authStateProvider.NotifyUserAuthentication(loginResponseDto.Token);
@@ -34,29 +34,6 @@ namespace Homesick.UI.Pages.Auth
             {
                 Snackbar.Add(responseDto?.Message);
             }
-        }
-
-        private async Task SignInUser(LoginResponseDto model)
-        {
-            var handler = new JwtSecurityTokenHandler();
-
-            var jwt = handler.ReadJwtToken(model.Token);
-
-            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email,
-                jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub,
-                jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value));
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name,
-                jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name).Value));
-
-
-            identity.AddClaim(new Claim(ClaimTypes.Name,
-                jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
-            identity.AddClaim(new Claim(ClaimTypes.Role,
-                jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
-
-            _sessionStorage.SetItemAsync("jwt", model.Token);
-        }
+        }        
     }
 }

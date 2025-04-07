@@ -4,10 +4,10 @@
         <MudGrid Justify="Justify.FlexStart" Spacing="2" Style="padding-top: 15px; padding-right: 20px;padding-bottom: 15px; padding-left: 20px;">
             <MudItem xs="12" md="2">
                 <MudAutocomplete @bind-Value="model.Area"
-                                 SearchFunc="Search"
-                                 Label="Περιοχή"
-                                 Placeholder="Περιοχή"
-                                 Clearable="true" />
+                SearchFunc="Search"
+                Label="Περιοχή"
+                Placeholder="Περιοχή"
+                Clearable="true" />
             </MudItem>
 
             <MudItem xs="7" md="2">
@@ -74,32 +74,56 @@
 }
 else
 {
-    <MudGrid>  
+    <MudGrid>
         <MudItem xs="12" sm="5">
-            @foreach (ListingDto item in listingData)
+            @foreach (ListingDto item in PageListings)
             {
-                    <MudCard>                  
-                        <MudCardContent>
-                            <MudCarousel Class="mud-width-full" Style="height:250px;" AutoCycle="false" TData="object">
-                                @foreach (ImageDto image in item.House.Images)
-                                {
-                                    <MudCarouselItem Class="aspect-ratio-container">
-                                        <MudImage Src="@image.Data" ObjectFit="ObjectFit.Contain" Class="aspect-ratio-image" />
-                                    </MudCarouselItem>
-                                }
-                            </MudCarousel>
-                            <MudText Typo="Typo.h5">@item.House.Name</MudText>
-                            <MudText Typo="Typo.body2">@item.House.Description</MudText>
-                            <MudText Typo="Typo.body2">@item.House.Price.ToString("C")</MudText>
-                        </MudCardContent>
-                    </MudCard>
+                <MudCard Class="mb-4">
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudCarousel Style="height:300px; width:300px;" AutoCycle="false" TData="object">
+                                    @foreach (ImageDto image in item.House.Images)
+                                    {
+                                        <MudCarouselItem Class="aspect-ratio-container">
+                                            <MudImage Src="@image.Data" ObjectFit="ObjectFit.Contain" Class="aspect-ratio-image" />
+                                        </MudCarouselItem>
+                                    }
+                                </MudCarousel>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" Class="pl-4">
+                                <MudText Typo="Typo.h5">@item.House.Name</MudText>
+                                <div style="max-height:220px; overflow:hidden; text-overflow: ellipsis;">
+                                    <MudText Typo="Typo.body2" Style="display:-webkit-box; -webkit-line-clamp:10; -webkit-box-orient:vertical; overflow:hidden;">
+                                        @item.House.Description
+                                    </MudText>
+                                </div>
+
+                                <MudGrid Class="mt-2">
+                                    <MudItem xs="3">
+                                        <MudIcon Icon="@Icons.Material.Filled.MeetingRoom" /> @item.House.Rooms Δωμ.
+                                    </MudItem>
+                                    <MudItem xs="3">
+                                        <MudIcon Icon="@Icons.Material.Filled.Layers" /> @item.House.Floor Όρ.
+                                    </MudItem>
+                                </MudGrid>
+
+                                <MudText Typo="Typo.h6" Class="mt-3" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
+
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
             }
         </MudItem>
+
         <MudFlexBreak />
-        <MudItem xs="12" sm="5">
-            <MudPagination Color="Color.Primary" Count="4" @bind-Selected="@_selected" />
+
+        <MudItem xs="12" sm="12">
+            <MudPagination Color="Color.Primary" Count="@TotalPages" @bind-Selected="@_selected" />
         </MudItem>
     </MudGrid>
+
 }
 
 @code {
@@ -111,7 +135,14 @@ else
     private List<string> _areas = SD.Areas;
 
     private Transition transition = Transition.Slide;
-    private int _selected = 1;
+    private int _selected = 1; // τρέχουσα σελίδα
+    private int _pageSize = 3;
+
+    private IEnumerable<ListingDto> PageListings => listingData
+        .Skip((_selected - 1) * _pageSize)
+        .Take(_pageSize);
+
+    private int TotalPages => (int)Math.Ceiling((double)listingData.Count / _pageSize);
 
     protected override async Task OnInitializedAsync()
     {        

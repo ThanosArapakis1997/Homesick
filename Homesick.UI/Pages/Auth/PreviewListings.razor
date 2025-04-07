@@ -1,0 +1,35 @@
+﻿@page "/preview"
+
+<MudAlert Severity="Severity.Normal">
+    <MudText Typo="Typo.body2">Αγγελίες</MudText>
+</MudAlert>
+<MudDataGrid Items="@listings" Loading="_loading">
+    <Columns>
+        <PropertyColumn Property="x => x.Name" Title="Ιδιοκτήτης" />
+        <PropertyColumn Property="x => x.House.Address" Title="Διεύθυνση" />
+        <PropertyColumn Property="x => x.House.Area" Title="Περιοχή" />
+        <PropertyColumn Property="x => x.House.ConstructionYear" Title="Έτος Κατασκευής" />
+        <PropertyColumn Property="x => x.House.Price" Title="Τιμή" />
+        <PropertyColumn Property="x => x.Status" Title="Κατάσταση" />
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton Size="@Size.Small" OnClick="@context.Actions.StartEditingItemAsync">Επισκόπηση</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+@code {
+    private List<ListingDto> listings = new List<ListingDto>();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ResponseDto response = await listingService.GetAllListings();
+
+        if (response != null && response.IsSuccess) listings = JsonConvert.DeserializeObject<List<ListingDto>>(Convert.ToString(response.Result));
+        else Snackbar.Add(response.Message);
+
+        _loading = false;
+    }
+
+}

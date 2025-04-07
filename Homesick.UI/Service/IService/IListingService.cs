@@ -8,6 +8,8 @@ namespace Homesick.UI.Service.IService
 
         Task<ResponseDto> GetFilteredListings(FilterDto houseDto);
 
+        Task<ResponseDto> GetAllListings();
+
         Task<ResponseDto> CreateListing(ListingDto listing);
     }
 }
