@@ -70,12 +70,47 @@
     </MudGrid>
 </MudForm>
 
+@if (authState is not null && authState.User.Identity?.IsAuthenticated == true)
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+
+        <MudPaper Elevation="1" Class="pa-4 mb-6">
+            <MudText Typo="Typo.h5" Class="mb-1">Γειά σου, @authState.User.FindFirst("name")?.Value</MudText>
+            <MudDivider/>
+            <br />
+            <MudText Typo="Typo.h6" Class="mb-4"><b>Οι αγγελίες σου</b></MudText>
+
+            <MudGrid Spacing="3">
+                @foreach(ListingDto item in listings)
+                {
+                    <MudItem xs="12" sm="6" md="6" lg="4">
+                        <MudCard Elevation="5" Class="h-100">
+                            <MudCardMedia Image="@item.House.Images.FirstOrDefault()?.Data" Height="200" />
+                            <MudCardContent>
+                                <MudText Typo="Typo.h6" Class="mb-2">@item.House.Name</MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3">@item.House.Area</MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" Class="ml-auto">Λεπτομέρειες</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }                                          
+            </MudGrid>
+        </MudPaper>
+    </MudContainer>
+}
+
+
 @code {
     private FilterDto model = new FilterDto();
 
     private bool showPriceDropdown = false;
     private bool showFloorAreaDropdown = false;
     private List<string> _areas = SD.Areas;
+    private AuthenticationState authState;
+    private List<ListingDto> listings = new List<ListingDto>();
 
     private void TogglePriceDropdown()
     {
@@ -116,6 +151,20 @@
         else
         {
             Snackbar.Add(response?.Message ?? "An error occurred", Severity.Warning);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            string userId = user.FindFirst("sub")?.Value;
+            ResponseDto response = await listingService.GetUserListings(userId);
+
+            listings = JsonConvert.DeserializeObject<List<ListingDto>>(Convert.ToString(response.Result));
         }
     }
 }

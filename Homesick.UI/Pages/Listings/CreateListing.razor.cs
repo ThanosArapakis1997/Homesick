@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using System.Diagnostics.Tracing;
 using System.IO;
 using Homesick.UI.Utility;
+using System.Xml.Linq;
 
 namespace Homesick.UI.Pages.Listings
 {
@@ -24,7 +25,7 @@ namespace Homesick.UI.Pages.Listings
         private ListingDto listing = new();
         private HouseDto model = new();
         private MudFileUpload<IReadOnlyList<IBrowserFile>> _fileUpload;
-        private IList<IBrowserFile> files;
+        private List<string> filenames = new List<string>();
 
         private AuthenticationState authState;
         public int count = 0;
@@ -58,6 +59,8 @@ namespace Homesick.UI.Pages.Listings
             {
                 try
                 {
+                    filenames.Add(image.Name);
+
                     var resizedImage = await image.RequestImageFileAsync(format, 300, 300);
 
                     using var stream = image.OpenReadStream();
@@ -71,7 +74,6 @@ namespace Homesick.UI.Pages.Listings
                     Console.WriteLine($"Base64 Hash: {Convert.ToBase64String(buffer).Substring(0, 30)}...");
 
                     model.Images.Add(new ImageDto {Data = imageData });
-                    files.Add(image);
                 }
                 catch (Exception ex)
                 {
@@ -158,6 +160,6 @@ namespace Homesick.UI.Pages.Listings
             if (count > 0) return false;
 
             return true;
-        }
+        }        
     }
 }
