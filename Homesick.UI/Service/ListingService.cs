@@ -29,6 +29,24 @@ namespace Homesick.UI.Service
                 Data = filter,
                 Url = SD.ListingAPIBase + "/api/listing/GetFilteredListings"
             });
+        }      
+
+        public async Task<ResponseDto?> GetListing(int listingId)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = SD.ListingAPIBase + "/api/listing/" + listingId
+            });
+        }
+
+        public async Task<ResponseDto?> GetAllListings()
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = SD.ListingAPIBase + "/api/listing"
+            });
         }
 
         public async Task<ResponseDto?> CreateListing(ListingDto listing)
@@ -41,12 +59,13 @@ namespace Homesick.UI.Service
             });
         }
 
-        public async Task<ResponseDto?> GetAllListings()
+        public async Task<ResponseDto?> UpdateListingStatus(int listingId, string newStatus)
         {
             return await _baseService.SendAsync(new RequestDto()
             {
-                ApiType = SD.ApiType.GET,
-                Url = SD.ListingAPIBase + "/api/listing"
+                ApiType = SD.ApiType.PUT,
+                Data = newStatus,
+                Url = SD.ListingAPIBase + "/api/listing/UpdateListingStatus/" + listingId
             });
         }
     }

@@ -13,11 +13,22 @@
         <PropertyColumn Property="x => x.Status" Title="Κατάσταση" />
         <TemplateColumn>
             <CellTemplate>
-                <MudButton Size="@Size.Small" OnClick="@context.Actions.StartEditingItemAsync">Επισκόπηση</MudButton>
+                <MudButton Size="@Size.Small" OnClick="@context.Actions.StartEditingItemAsync" Href=@($"/listing/preview/{context.Item.ListingId}")>Επισκόπηση</MudButton>
+            </CellTemplate>
+
+        </TemplateColumn>
+        <TemplateColumn>           
+            <CellTemplate>
+                @if (context.Item.Status == SD.StatusInReview)
+                {
+                    <MudButton Size="@Size.Small" OnClick="() => ApproveListing(context.Item.ListingId)" Color="Color.Primary">Έγκριση</MudButton>
+                }
             </CellTemplate>
         </TemplateColumn>
+
     </Columns>
 </MudDataGrid>
+
 @code {
     private List<ListingDto> listings = new List<ListingDto>();
     private bool _loading = true;
@@ -30,6 +41,21 @@
         else Snackbar.Add(response.Message);
 
         _loading = false;
+    }
+
+    private async Task ApproveListing(int id)
+    {
+        ResponseDto response = await listingService.UpdateListingStatus(id, SD.StatusApproved);
+
+        if (response != null && response.IsSuccess)
+        {
+            Snackbar.Add("Listing approved successfully", Severity.Success);
+            StateHasChanged();            
+        }
+        else
+        {
+            Snackbar.Add("Error approving listing", Severity.Error);
+        }
     }
 
 }

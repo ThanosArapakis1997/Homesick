@@ -10,6 +10,10 @@ namespace Homesick.UI.Service.IService
 
         Task<ResponseDto> GetAllListings();
 
+        Task<ResponseDto?> GetListing(int listingId);
+
+        Task<ResponseDto?> UpdateListingStatus(int listingId, string newStatus);
+
         Task<ResponseDto> CreateListing(ListingDto listing);
     }
 }

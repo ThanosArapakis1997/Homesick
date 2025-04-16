@@ -48,6 +48,32 @@ namespace Homesick.Services.ListingAPI.Controllers
             return _response;
         }
 
+
+        [HttpGet("{id:int}")]
+        [Authorize]
+        public async Task<ResponseDto> GetListing(int id)
+        {
+            try
+            {
+                ListingDto listing = await _listingService.GetListingByIdAsync(id);
+                if (listing == null)
+                {
+                    _response.Message = "No Listings Found";
+                    _response.IsSuccess = false;
+                }
+                else
+                {
+                    _response.Result = listing;
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
         [HttpGet("GetListings/{userId}")]
         [Authorize]
         public async Task<ResponseDto> GetUserListings(string userId)
@@ -99,6 +125,33 @@ namespace Homesick.Services.ListingAPI.Controllers
             {
                 ListingDto model = await _listingService.CreateListingAsync(listing);
                 _response.Result = model;
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
+        [Authorize]
+        [HttpPut("UpdateListingStatus/{listingId:int}")]
+        public async Task<ResponseDto> UpdateListingStatus(int listingId, [FromBody] string newStatus)
+        {
+            try
+            {
+                var listing = await _listingService.GetListingByIdAsync(listingId);
+                if (listing == null)
+                {
+                    _response.Message = "No Listing Found";
+                    _response.IsSuccess = false;
+                }
+                else
+                {
+                    listing.Status = newStatus;
+                    await _listingService.UpdateListingAsync(listing);
+                    _response.Result = listing;
+                }
             }
             catch (Exception ex)
             {

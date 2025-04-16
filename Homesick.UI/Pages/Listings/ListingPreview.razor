@@ -1,0 +1,77 @@
+﻿@page "/listing/preview/{id:int}"
+
+<MudPaper Class="pa-4" Style="max-width: 1300px; margin:auto">
+
+    <!-- Image Carousel -->
+    @if (listing.House.Images?.Any() == true)
+    {
+        <MudContainer MaxWidth="MaxWidth.Large" Style="max-width: 1000px; margin: auto;">
+            <MudCarousel Style="height:400px; width:900px;" ShowArrows="true" AutoCycle="false" TData="object">
+                @foreach (ImageDto image in listing.House.Images)
+                {
+                    <MudCarouselItem Class="aspect-ratio-container">
+                        <MudImage Src="@image.Data" Alt="Property Image" Style="width:100%; height:500px; object-fit:cover;" />
+                    </MudCarouselItem>
+                }
+            </MudCarousel>
+        </MudContainer>
+        <MudDivider/>
+    }
+
+    <MudText Typo="Typo.h4" Class="mt-4">@house.Name</MudText>
+    <MudText Typo="Typo.subtitle1">@house.Address, @house.Area, @house.City</MudText>
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mt-2">€@house.Price</MudText>
+
+    <MudGrid Class="mt-4">
+        <MudItem xs="6" sm="3">
+            <MudText Typo="Typo.subtitle2">Εμβαδόν</MudText>
+            <MudText>@house.FloorArea m²</MudText>
+        </MudItem>
+        <MudItem xs="6" sm="3">
+            <MudText Typo="Typo.subtitle2">Υπνοδωμάτια</MudText>
+            <MudText>@house.Rooms</MudText>
+        </MudItem>
+        <MudItem xs="6" sm="3">
+            <MudText Typo="Typo.subtitle2">Όροφος</MudText>
+            <MudText>@house.Floor</MudText>
+        </MudItem>
+        <MudItem xs="6" sm="3">
+            <MudText Typo="Typo.subtitle2">Έτος Κατασκευής</MudText>
+            <MudText>@house.ConstructionYear</MudText>
+        </MudItem>
+    </MudGrid>
+
+    <MudText Typo="Typo.h6" Class="mt-4">Περιγραφή</MudText>
+    <MudText>@house.Description</MudText>
+
+    <MudPaper Class="mt-4 pa-4">
+        <MudText Typo="Typo.h6">Επικοινωνία</MudText>
+        <MudText><b>Όνομα:</b> @listing.Name</MudText>
+        <MudText><b>Τηλέφωνο:</b> @listing.Phone</MudText>
+        <MudText><b>Email:</b> @listing.Email</MudText>
+    </MudPaper>
+
+</MudPaper>
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    public ListingDto listing = new ListingDto();
+    public HouseDto house = new HouseDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ResponseDto response = await listingService.GetListing(id);
+
+        if (response != null && response.IsSuccess)
+        {
+            listing = JsonConvert.DeserializeObject<ListingDto>(Convert.ToString(response.Result));
+            house = listing.House;
+        }
+        else
+        {
+            Snackbar.Add("Error loading listing", Severity.Error);
+        }
+
+    }
+}

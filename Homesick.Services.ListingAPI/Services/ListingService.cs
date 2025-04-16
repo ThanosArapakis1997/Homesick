@@ -29,9 +29,14 @@ namespace Homesick.Services.ListingAPI.Services
             return _mapper.Map<List<ListingDto>>(listings);
         }
 
-        public Task<ListingDto> GetListingByIdAsync(int id)
+        public async Task<ListingDto> GetListingByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var listing = await _db.Listings
+                .AsNoTracking()
+                .Include(l => l.House)
+                .ThenInclude(h => h.Images) // Include images if needed
+                .FirstOrDefaultAsync(l => l.ListingId == id);
+            return _mapper.Map<ListingDto>(listing);
         }
 
 
@@ -52,9 +57,20 @@ namespace Homesick.Services.ListingAPI.Services
             return _mapper.Map<ListingDto>(listingEntity);
         }
 
-        public Task<ListingDto> UpdateListingAsync(ListingDto listing)
+        public async Task<ListingDto> UpdateListingAsync(ListingDto listing)
         {
-            throw new NotImplementedException();
+            var listingEntity = _mapper.Map<Listing>(listing);
+            // Ensure house exists and map images correctly
+            if (listing.House != null)
+            {
+                listingEntity.House = _mapper.Map<House>(listing.House);
+            }
+
+            _db.Listings.Update(listingEntity);
+
+            await _db.SaveChangesAsync();
+
+            return _mapper.Map<ListingDto>(listingEntity);
         }
 
         public async Task<ListingDto> DeleteListingAsync(int id)
@@ -64,7 +80,10 @@ namespace Homesick.Services.ListingAPI.Services
 
         public async Task<List<ListingDto>> GetListingsByUserIdAsync(string userId)
         {
-            List<ListingDto> listings = _mapper.Map<List<ListingDto>>(_db.Listings.Where(l => l.UserId == userId).Include(l => l.House).ThenInclude(h => h.Images)).ToList();           
+            List<ListingDto> listings = _mapper.Map<List<ListingDto>>(
+                _db.Listings.Where(l => l.UserId == userId)
+                .Include(l => l.House).
+                ThenInclude(h => h.Images)).ToList();           
 
             return listings;
         }

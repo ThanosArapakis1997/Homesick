@@ -92,7 +92,7 @@
                                 <MudText Typo="Typo.body2" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
                             </MudCardContent>
                             <MudCardActions>
-                                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" Class="ml-auto">Λεπτομέρειες</MudButton>
+                                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" Href=@($"/listing/preview/{item.ListingId}") Class="ml-auto">Λεπτομέρειες</MudButton>
                             </MudCardActions>
                         </MudCard>
                     </MudItem>

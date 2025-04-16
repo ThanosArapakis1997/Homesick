@@ -91,6 +91,7 @@ namespace Homesick.UI.Pages.Listings
                 try
                 {
                     listing.House = model;
+                    listing.Status = SD.StatusInReview;
 
                     ResponseDto responseDto = await listingService.CreateListing(listing);
                     if (responseDto?.IsSuccess == true)
