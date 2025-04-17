@@ -1,42 +1,43 @@
-﻿using Homesick.UI.Models;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Http;
-using Microsoft.JSInterop;
-using MudBlazor;
-using Microsoft.AspNetCore.Components;
-using System.Diagnostics.Tracing;
-using System.IO;
+﻿using Homesick.UI.Layout;
+using Homesick.UI.Models;
 using Homesick.UI.Utility;
-using System.Xml.Linq;
-using Homesick.UI.Layout;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Hosting.Server;
+using MudBlazor;
+using Newtonsoft.Json;
+using System;
+using System.Reflection;
+using static MudBlazor.CategoryTypes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Homesick.UI.Pages.Listings
 {
-    public partial class CreateListing
+    public partial class EditListing
     {
-        private int _index;
-        private bool _completed;
-        private int progress = 0;
-        MudForm form;
+        [Parameter] public int id { get; set; }
 
+        public ListingDto listing = new ListingDto();
+        public HouseDto house = new HouseDto();
         private List<string> _areas = SD.Areas;
-        private ListingDto listing = new();
-        private HouseDto model = new();
         private MudFileUpload<IReadOnlyList<IBrowserFile>> _fileUpload;
-        private List<string> filenames = new List<string>();
-
-        private AuthenticationState authState;
-        public int count = 0;
         bool success = false;
         List<string> errors = new List<string>();
 
         protected override async Task OnInitializedAsync()
         {
-            authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            listing.UserId = authState.User.FindFirst("sub").Value;
-            listing.Email = authState.User.FindFirst("email").Value;
+            ResponseDto response = await listingService.GetListing(id);
+
+            if (response != null && response.IsSuccess)
+            {
+                listing = JsonConvert.DeserializeObject<ListingDto>(Convert.ToString(response.Result));
+                house = listing.House;
+            }
+            else
+            {
+                Snackbar.Add("Error loading listing", Severity.Error);
+            }
+
         }
 
         private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
@@ -59,8 +60,6 @@ namespace Homesick.UI.Pages.Listings
             {
                 try
                 {
-                    filenames.Add(image.Name);
-
                     var resizedImage = await image.RequestImageFileAsync(format, 300, 300);
 
                     using var stream = image.OpenReadStream();
@@ -73,7 +72,7 @@ namespace Homesick.UI.Pages.Listings
 
                     Console.WriteLine($"Base64 Hash: {Convert.ToBase64String(buffer).Substring(0, 30)}...");
 
-                    model.Images.Add(new ImageDto {Name=image.Name, Data = imageData });
+                    house.Images.Add(new ImageDto {Name=image.Name, Data = imageData });
                 }
                 catch (Exception ex)
                 {
@@ -81,31 +80,38 @@ namespace Homesick.UI.Pages.Listings
                 }
             }
         }
-
-        private void DeleteFile(string file)
+        private async Task ClearAsync()
         {
-            filenames.Remove(file);
-            model.Images?.RemoveAll(img => img.Name == file); // Adjust this logic if filenames aren't the same
+            house.Images?.Clear();
+
+            if (_fileUpload is not null)
+            {
+                await _fileUpload.ClearAsync(); // Resets the internal file list
+            }
+
+            StateHasChanged(); // Force UI refresh
+        }
+
+        private void DeleteFile(ImageDto file)
+        {
+            house.Images?.RemoveAll(img => img.Name == file.Name); // Adjust this logic if filenames aren't the same
 
             StateHasChanged();
         }
 
         private async Task HandleValidSubmit()
         {
-            success =await Validate();
+            success = await Validate();
 
             if (success)
             {
                 try
                 {
-                    listing.House = model;
-                    listing.Status = SD.StatusInReview;
-
-                    ResponseDto responseDto = await listingService.CreateListing(listing);
+                    ResponseDto responseDto = await listingService.UpdateListing(listing);
                     if (responseDto?.IsSuccess == true)
                     {
-                        Navigation.NavigateTo("/");
-                        Snackbar.Add("Listing created successfully!", Severity.Success);
+                        Navigation.NavigateTo("/profile");
+                        Snackbar.Add("Listing updated successfully!", Severity.Success);
                     }
                     else
                     {
@@ -129,12 +135,12 @@ namespace Homesick.UI.Pages.Listings
         {
             errors.Clear();
             int count = 0;
-            if (string.IsNullOrEmpty(model.Area))
+            if (string.IsNullOrEmpty(house.Area))
             {
                 errors.Add("Το πεδίο Περιοχή είναι απαραίτητο");
                 count++;
             }
-            if (string.IsNullOrEmpty(model.Name))
+            if (string.IsNullOrEmpty(house.Name))
             {
                 errors.Add("Ο τίτλος του σπιτιού είναι απαραίτητος");
                 count++;
@@ -144,12 +150,12 @@ namespace Homesick.UI.Pages.Listings
                 errors.Add("Το πεδίο Τύπος Αγγελίας είναι απαραίτητο");
                 count++;
             }
-            if (model.PropertyType == null)
+            if (house.PropertyType == null)
             {
                 errors.Add("Το πεδίο Κατηγορία Ακινήτου είναι απαραίτητο");
                 count++;
             }
-            if (model.HouseType == null)
+            if (house.HouseType == null)
             {
                 errors.Add("Το είδος ακινήτου είναι απαραίτητο");
                 count++;
@@ -158,8 +164,8 @@ namespace Homesick.UI.Pages.Listings
             {
                 errors.Add("Το όνομα του ιδιοκτήτη είναι απαραίτητο");
                 count++;
-            }           
-            if (model.Price == 0)
+            }
+            if (house.Price == 0)
             {
                 errors.Add("Η τιμή του ακινήτου είναι απαραίτητη");
                 count++;
@@ -168,6 +174,6 @@ namespace Homesick.UI.Pages.Listings
             if (count > 0) return false;
 
             return true;
-        }        
+        }
     }
 }

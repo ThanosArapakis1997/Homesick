@@ -8,7 +8,7 @@ namespace Homesick.Services.ListingAPI.Services.IService
         Task<ListingDto> GetListingByIdAsync(int id);
         Task<ListingDto> CreateListingAsync(ListingDto listing);
         Task<ListingDto> UpdateListingAsync(ListingDto listing);
-        Task<ListingDto> DeleteListingAsync(int id);
+        Task<ListingDto> DeleteListingAsync(ListingDto listing);
         Task<List<ListingDto>> GetListingsByUserIdAsync(string userId);
         Task<List<ListingDto>> GetFilteredListingsAsync(FilterDto filter);
 

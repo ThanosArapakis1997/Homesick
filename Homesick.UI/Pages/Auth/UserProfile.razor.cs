@@ -1,6 +1,9 @@
-﻿using Homesick.UI.Models;
+﻿using Homesick.UI.Layout;
+using Homesick.UI.Models;
 using Homesick.UI.Utility;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Hosting.Server;
+using MudBlazor;
 using Newtonsoft.Json;
 using System.Data;
 
@@ -35,7 +38,28 @@ namespace Homesick.UI.Pages.Auth
             {
                 Console.WriteLine($"Ρόλος: Unauthorized");
             }
+        }
 
+        private async Task DeleteServerAsync(ListingDto listing)
+        {
+            var parameters = new DialogParameters<ConfirmationDialog> { { x => x.Listing, listing } };
+
+            var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Διαγραφή Αγγελίας", parameters);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                ResponseDto response = await listingService.DeleteListing(listing.ListingId);
+                if (response.IsSuccess)
+                {
+                    Snackbar.Add("Η αγγελία διαγράφηκε επιτυχώς!", Severity.Success);
+                    StateHasChanged();
+                }
+                else
+                {
+                    Snackbar.Add("Η διαγραφή απέτυχε!", Severity.Error);
+                }
+            }
         }
     }
 }

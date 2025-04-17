@@ -1,0 +1,24 @@
+﻿<MudDialog>    
+    <DialogContent>
+        <MudText Typo="Typo.button" Class="mb-2">Είστε σίγουρος ότι θέλετε να διαγράψετε την παρακάτω αγγελία?</MudText>
+        <br />
+        <MudText Typo="Typo.button">@Listing.Name</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public ListingDto Listing { get; set; } = new ListingDto();
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+
+}

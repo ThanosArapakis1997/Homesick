@@ -3,7 +3,7 @@
 <MudPaper Class="pa-4" Style="max-width: 1300px; margin:auto">
 
     <!-- Image Carousel -->
-    @if (listing.House.Images?.Any() == true)
+    @if (listing.House?.Images?.Any() == true)
     {
         <MudContainer MaxWidth="MaxWidth.Large" Style="max-width: 1000px; margin: auto;">
             <MudCarousel Style="height:400px; width:900px;" ShowArrows="true" AutoCycle="false" TData="object">

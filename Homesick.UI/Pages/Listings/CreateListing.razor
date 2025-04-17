@@ -112,10 +112,14 @@
                                         @foreach (var file in filenames)
                                         {
                                             <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
-                                               File @file
+                                                @file
+                                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                               Color="Color.Error"
+                                                               Size="Size.Small"
+                                                               OnClick="@(() => DeleteFile(file))" />
                                             </MudListItem>
                                         }
-                                    </MudList>                            
+                                    </MudList>
                                 }
 
 
@@ -145,20 +149,6 @@
                     </ActionContent>
                 </MudStepper>
             </MudPaper>
-        </MudItem>
-        <MudItem xs="12" md="4">
-            <MudPopover Open="@_open" Fixed="true" OverflowBehavior="OverflowBehavior.FlipAlways" RelativeWidth="DropdownWidth.Relative" AnchorOrigin="Origin.CenterRight" Class="custom-popover">
-                <div class="d-flex flex-column">
-                    @if (errors != null)
-                    {
-                        @foreach (var error in errors)
-                        {
-                            <MudText Typo="Typo.body2" Color="Color.Dark">@error</MudText>
-                        }
-                    }
-                    <MudButton OnClick="@(() => _open= !_open)" Class="ml-auto mr-n3 mb-1" Color="Color.Error">OK</MudButton>
-                </div>
-            </MudPopover>
-        </MudItem>
+        </MudItem>      
     </MudGrid>
 </MudForm>

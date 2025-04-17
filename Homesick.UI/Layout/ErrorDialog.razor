@@ -1,0 +1,27 @@
+﻿<MudDialog>
+    <DialogContent>
+            <MudList T="string">
+                @foreach (string error in errors)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.Error" @key="@error">
+                        @error
+                    </MudListItem>
+                }
+            </MudList>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private void Cancel() => MudDialog.Cancel();
+
+    [Parameter]
+    public List<string> errors { get; set; } = new List<string>();
+}

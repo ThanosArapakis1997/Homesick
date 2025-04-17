@@ -1,0 +1,143 @@
+﻿@page "/listing/edit/{id:int}"
+
+<MudPaper Class="pa-4" Style="max-width: 1300px; margin:auto">
+
+    <!-- Image Carousel -->
+    @if (listing.House?.Images?.Any() == true)
+    {
+        <MudContainer MaxWidth="MaxWidth.Large" Style="max-width: 1000px; margin: auto;">
+            <MudCarousel Style="height:400px; width:900px;" ShowArrows="true" AutoCycle="false" TData="object">
+                @if(house.Images != null && house.Images.Count >0)
+                {
+                    @foreach (ImageDto image in listing.House.Images)
+                    {
+                        <MudCarouselItem Class="aspect-ratio-container">
+                            <MudImage Src="@image.Data" Alt="Property Image" Style="width:100%; height:500px; object-fit:cover;" />
+                        </MudCarouselItem>
+                    }
+                }
+            </MudCarousel>
+        </MudContainer>
+        <MudDivider/>
+        <MudForm>
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                <MudTabPanel Text="Κατηγορία Ακινήτου">
+
+                    <MudText Typo="Typo.button">Κατηγορία Ακινήτου</MudText>
+                    <MudRadioGroup T="string" @bind-Value="house.PropertyType">
+                        <MudRadio T="string" Value="@SD.PropertyTypeHouse">Κατοικία</MudRadio>
+                        <MudRadio T="string" Value="@SD.PropertyTypeLand">Γη</MudRadio>
+                    </MudRadioGroup>
+
+                    @if (house.PropertyType == @SD.PropertyTypeHouse)
+                    {
+                        <MudText Typo="Typo.button">Eίδος του ακινήτου</MudText>
+                        <MudSelect T="string" @bind-Value="house.HouseType">
+                            <MudSelectItem T="string" Value="@SD.HouseTypeFlat">Διαμέρισμα</MudSelectItem>
+                            <MudSelectItem T="string" Value="@SD.HouseTypeStudio">Studio/Γκαρσονιέρα</MudSelectItem>
+                            <MudSelectItem T="string" Value="@SD.HouseTypeMaisonette">Μεζονέτα</MudSelectItem>
+                            <MudSelectItem T="string" Value="@SD.HouseTypeVilla">Βίλλα</MudSelectItem>
+                            <MudSelectItem T="string" Value="@SD.HouseTypeLoft">Loft</MudSelectItem>
+                        </MudSelect>
+                    }
+                    <br />
+                    <br />
+                    <MudText Typo="Typo.button">Διατίθεται προς</MudText>
+                    <MudRadioGroup T="string" @bind-value="listing.ListingType">
+                        <MudRadio T="string" Value="@SD.ListingTypeBuy">Πώληση</MudRadio>
+                        <MudRadio T="string" Value="@SD.ListingTypeRent">Ενοικίαση</MudRadio>
+                    </MudRadioGroup>
+
+                </MudTabPanel>
+                <MudTabPanel Text="Τοποθεσία">
+                    <MudText Typo="Typo.button">Πόλη</MudText>
+                    <MudTextField Variant="Variant.Text" Placeholder="Πόλη" @bind-Value="house.City" />
+                    <br />
+                    <MudText Typo="Typo.button">Περιοχή</MudText>
+                    <MudAutocomplete @bind-Value="house.Area"
+                    SearchFunc="Search"
+                    Placeholder="Περιοχή"
+                    Clearable="true" />                                   
+                    <br />
+                    <MudText Typo="Typo.button">Διεύθυνση</MudText>
+                    <MudTextField Variant="Variant.Text" Placeholder="Διεύθυνση" @bind-Value="house.Address" />
+
+                </MudTabPanel>
+                <MudTabPanel Text="Πληροφορίες Ακινήτου">
+                    <MudText Typo="Typo.button">Τίτλος Ακινήτου</MudText>
+                    <MudTextField Variant="Variant.Text" Placeholder="Τίτλος" Required="true" RequiredError="Ο τίτλος ακινήτου είναι υποχρεωτικός" @bind-Value="house.Name" />
+                    <br />
+                    <MudText Typo="Typo.button">Τιμή Ακινήτου</MudText>
+                    <MudNumericField Variant="Variant.Text" Placeholder="€/μήνα" @bind-Value="house.Price" />
+                    <br />
+                    <MudText Typo="Typo.button">Εμβαδόν Ακινήτου</MudText>
+                    <MudNumericField Variant="Variant.Text" Placeholder="τ.μ" @bind-Value="house.FloorArea" />
+                    <br />
+                    <MudText Typo="Typo.button">Όροφος</MudText>
+                    <MudNumericField Variant="Variant.Text" @bind-Value="house.Floor" />
+                    <br />
+                    <MudText Typo="Typo.button">Υπνοδωμάτια</MudText>
+                    <MudNumericField Variant="Variant.Text" @bind-Value="house.Rooms" />
+                    <br />
+                    <MudText Typo="Typo.button">Έτος Κατασκευής</MudText>
+                    <MudNumericField Variant="Variant.Text" @bind-Value="house.ConstructionYear" />
+
+                    <MudText Typo="Typo.button">Περιγραφή Ακινήτου</MudText>
+                    <MudTextField Lines="5" AutoGrow="true" Variant="Variant.Outlined" @bind-Value="house.Description" />
+                </MudTabPanel>
+                <MudTabPanel Text="Πληροφορίες Ιδιοκτήτη">
+                    <MudText Typo="Typo.button">Ονοματεπώνυμο</MudText>
+                    <MudTextField Variant="Variant.Text" Placeholder="Ονοματεπώνυμο" @bind-Value="listing.Name" />
+                    <br />
+                    <MudText Typo="Typo.button">Τηλέφωνο</MudText>
+                    <MudTextField Variant="Variant.Text" InputMode="InputMode.tel" Placeholder="Τηλέφωνο" @bind-Value="listing.Phone" />
+                    <br />
+                    <MudText Typo="Typo.button">Email</MudText>
+                    <MudTextField Variant="Variant.Text" InputMode="InputMode.email" Placeholder="Email" @bind-Value="listing.Email" />
+                </MudTabPanel>
+                <MudTabPanel Text="Εικόνες">
+                    <MudFileUpload @ref="_fileUpload" T="IReadOnlyList<IBrowserFile>" OnFilesChanged="UploadFiles" AppendMultipleFiles="true">
+                        <ActivatorContent>
+                            <MudButton Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.CloudUpload">
+                                Upload Files
+                            </MudButton>
+                            <MudButton Color="Color.Error"
+                                       Disabled="@(house.Images is null || !house.Images.Any())"
+                                       OnClick="@ClearAsync"
+                                       Variant="Variant.Filled">
+                                Clear
+                            </MudButton>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                    <MudPaper Class="pa-4">
+
+                        @if (house.Images != null)
+                        {
+                            <MudList T="string">
+                                @foreach (var file in house.Images)
+                                {
+                                    <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file" >
+                                        @file.Name
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                       Color="Color.Error"
+                                                       Size="Size.Small"
+                                                       OnClick="@(() => DeleteFile(file))" />
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        }
+
+
+                    </MudPaper>
+                </MudTabPanel>
+
+            </MudTabs>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-4" @onclick="HandleValidSubmit">
+                Αποθήκευση
+            </MudButton>
+        </MudForm>        
+        
+    }
+</MudPaper>

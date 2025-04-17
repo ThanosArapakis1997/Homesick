@@ -39,6 +39,29 @@ namespace Homesick.Services.ListingAPI.Services
             return _mapper.Map<ListingDto>(listing);
         }
 
+        public async Task<List<ListingDto>> GetListingsByUserIdAsync(string userId)
+        {
+            List<ListingDto> listings = _mapper.Map<List<ListingDto>>(
+                _db.Listings.Where(l => l.UserId == userId)
+                .Include(l => l.House).
+                ThenInclude(h => h.Images)).ToList();
+
+            return listings;
+        }
+
+        public async Task<List<ListingDto>> GetFilteredListingsAsync(FilterDto filter)
+        {
+            var houseQuery = _queryMaker.MakeQuery(filter);
+
+            var listings = await _db.Listings
+                .Where(l => houseQuery.Any(h => h.HouseId == l.HouseId)) // Ensure only matching houses are included
+                .Include(l => l.House)
+                .ThenInclude(h => h.Images)  // Include images if needed
+                .ToListAsync();
+
+            return _mapper.Map<List<ListingDto>>(listings);
+        }
+
 
         public async Task<ListingDto> CreateListingAsync(ListingDto listing)
         {
@@ -73,33 +96,16 @@ namespace Homesick.Services.ListingAPI.Services
             return _mapper.Map<ListingDto>(listingEntity);
         }
 
-        public async Task<ListingDto> DeleteListingAsync(int id)
+        public async Task<ListingDto> DeleteListingAsync(ListingDto listing)
         {
-            throw new NotImplementedException();
-        }
+            var listingEntity = _mapper.Map<Listing>(listing);
+            
+            _db.Listings.Remove(listingEntity);
+            await _db.SaveChangesAsync();
 
-        public async Task<List<ListingDto>> GetListingsByUserIdAsync(string userId)
-        {
-            List<ListingDto> listings = _mapper.Map<List<ListingDto>>(
-                _db.Listings.Where(l => l.UserId == userId)
-                .Include(l => l.House).
-                ThenInclude(h => h.Images)).ToList();           
-
-            return listings;
-        }
-
-        public async Task<List<ListingDto>> GetFilteredListingsAsync(FilterDto filter)
-        {
-            var houseQuery = _queryMaker.MakeQuery(filter);
-
-            var listings = await _db.Listings
-                .Where(l => houseQuery.Any(h => h.HouseId == l.HouseId)) // Ensure only matching houses are included
-                .Include(l => l.House)
-                .ThenInclude(h => h.Images)  // Include images if needed
-                .ToListAsync();
-
-            return _mapper.Map<List<ListingDto>>(listings);
-        }
+            return _mapper.Map<ListingDto>(listingEntity);
+        }      
+        
 
     }
 }

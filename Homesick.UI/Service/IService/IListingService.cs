@@ -14,6 +14,10 @@ namespace Homesick.UI.Service.IService
 
         Task<ResponseDto?> UpdateListingStatus(int listingId, string newStatus);
 
+        Task<ResponseDto?> UpdateListing(ListingDto listing);
+
         Task<ResponseDto> CreateListing(ListingDto listing);
+
+        Task<ResponseDto> DeleteListing(int listingId);
     }
 }

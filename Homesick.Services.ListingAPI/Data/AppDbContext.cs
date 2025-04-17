@@ -28,6 +28,20 @@ namespace Homesick.Services.ListingAPI.Data
             modelBuilder.Entity<House>()
                 .Property(p => p.Imagepaths)
                 .HasConversion(stringListConverter);
+
+            // Listing -> House (Cascade delete)
+            modelBuilder.Entity<Listing>()
+                .HasOne(l => l.House)
+                .WithOne()
+                .HasForeignKey<Listing>(l => l.HouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // House -> HouseImages (Cascade delete)
+            modelBuilder.Entity<House>()
+                .HasMany(h => h.Images)
+                .WithOne(img => img.House)
+                .HasForeignKey(img => img.HouseId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

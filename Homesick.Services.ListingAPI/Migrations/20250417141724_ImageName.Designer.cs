@@ -4,6 +4,7 @@ using Homesick.Services.ListingAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Homesick.Services.ListingAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250417141724_ImageName")]
+    partial class ImageName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,7 +93,7 @@ namespace Homesick.Services.ListingAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HouseId")
+                    b.Property<int?>("HouseId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -138,28 +141,23 @@ namespace Homesick.Services.ListingAPI.Migrations
 
                     b.HasKey("ListingId");
 
-                    b.HasIndex("HouseId")
-                        .IsUnique();
+                    b.HasIndex("HouseId");
 
                     b.ToTable("Listings");
                 });
 
             modelBuilder.Entity("Homesick.Services.ListingAPI.Models.Image", b =>
                 {
-                    b.HasOne("Homesick.Services.ListingAPI.Models.House", "House")
+                    b.HasOne("Homesick.Services.ListingAPI.Models.House", null)
                         .WithMany("Images")
-                        .HasForeignKey("HouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("House");
+                        .HasForeignKey("HouseId");
                 });
 
             modelBuilder.Entity("Homesick.Services.ListingAPI.Models.Listing", b =>
                 {
                     b.HasOne("Homesick.Services.ListingAPI.Models.House", "House")
-                        .WithOne()
-                        .HasForeignKey("Homesick.Services.ListingAPI.Models.Listing", "HouseId")
+                        .WithMany()
+                        .HasForeignKey("HouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

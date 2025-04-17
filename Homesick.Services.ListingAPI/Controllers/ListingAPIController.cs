@@ -160,5 +160,57 @@ namespace Homesick.Services.ListingAPI.Controllers
             }
             return _response;
         }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<ResponseDto> UpdateListing([FromBody] ListingDto listing)
+        {
+            try
+            {
+                if (listing == null)
+                {
+                    _response.Message = "No Listing Found";
+                    _response.IsSuccess = false;
+                }
+                else
+                {
+                    await _listingService.UpdateListingAsync(listing);
+                    _response.Result = listing;
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteListing/{listingId:int}")]
+        public async Task<ResponseDto> DeleteListing(int listingId)
+        {
+            try
+            {
+                var listing = await _listingService.GetListingByIdAsync(listingId);
+                if (listing == null)
+                {
+                    _response.Message = "No Listing Found";
+                    _response.IsSuccess = false;
+                }
+                else
+                {
+                    await _listingService.DeleteListingAsync(listing);
+                    _response.Result = listing;
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
     }
 }
