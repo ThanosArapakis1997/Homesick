@@ -51,10 +51,10 @@ namespace Homesick.Services.ListingAPI.Services
 
         public async Task<List<ListingDto>> GetFilteredListingsAsync(FilterDto filter)
         {
-            var houseQuery = _queryMaker.MakeQuery(filter);
+            IQueryable<Listing> listingQuery = _queryMaker.MakeQuery(filter);
 
             var listings = await _db.Listings
-                .Where(l => houseQuery.Any(h => h.HouseId == l.HouseId)) // Ensure only matching houses are included
+                .Where(l => listingQuery.Any(h => h.HouseId == l.HouseId)) // Ensure only matching houses are included
                 .Include(l => l.House)
                 .ThenInclude(h => h.Images)  // Include images if needed
                 .ToListAsync();
@@ -83,10 +83,21 @@ namespace Homesick.Services.ListingAPI.Services
         public async Task<ListingDto> UpdateListingAsync(ListingDto listing)
         {
             var listingEntity = _mapper.Map<Listing>(listing);
+
             // Ensure house exists and map images correctly
             if (listing.House != null)
             {
                 listingEntity.House = _mapper.Map<House>(listing.House);
+            }
+
+            var updatedImageIds = listing.House.Images.Select(i => i.Id).ToList();
+
+            // Remove images not present in DTO
+            var imagesToDelete = _db.HouseImages.Where(img =>img.HouseId==listing.HouseId && !updatedImageIds.Contains(img.Id)).ToList();
+
+            foreach (var image in imagesToDelete)
+            {
+                _db.HouseImages.Remove(image); // explicitly remove from DbSet
             }
 
             _db.Listings.Update(listingEntity);
@@ -101,6 +112,7 @@ namespace Homesick.Services.ListingAPI.Services
             var listingEntity = _mapper.Map<Listing>(listing);
             
             _db.Listings.Remove(listingEntity);
+            _db.Houses.Remove(listingEntity.House); // Remove the associated house if needed
             await _db.SaveChangesAsync();
 
             return _mapper.Map<ListingDto>(listingEntity);

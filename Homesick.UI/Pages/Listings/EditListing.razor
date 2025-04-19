@@ -3,11 +3,9 @@
 <MudPaper Class="pa-4" Style="max-width: 1300px; margin:auto">
 
     <!-- Image Carousel -->
-    @if (listing.House?.Images?.Any() == true)
-    {
         <MudContainer MaxWidth="MaxWidth.Large" Style="max-width: 1000px; margin: auto;">
             <MudCarousel Style="height:400px; width:900px;" ShowArrows="true" AutoCycle="false" TData="object">
-                @if(house.Images != null && house.Images.Count >0)
+                @if (listing.House?.Images?.Any() == true)
                 {
                     @foreach (ImageDto image in listing.House.Images)
                     {
@@ -134,10 +132,13 @@
                 </MudTabPanel>
 
             </MudTabs>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-4" @onclick="HandleValidSubmit">
+        <MudButtonGroup Color="Color.Info" Variant="Variant.Filled" Class="ml-auto mt-4">
+            <MudButton Href="/profile">
+                Πίσω στο Προφίλ
+            </MudButton>
+            <MudButton @onclick="HandleValidSubmit">
                 Αποθήκευση
             </MudButton>
-        </MudForm>        
-        
-    }
+        </MudButtonGroup>         
+        </MudForm>               
 </MudPaper>

@@ -3,43 +3,77 @@
 
 <MudImage Src="images/BackgroundImage.jpg" ObjectFit=ObjectFit.Cover Style="height: 500px; width: 100%; position: absolute; top: 0; left: 0;" Alt="HomepageImage" />
 
-<MudForm Model="@model" Style="margin-top: 55vh; align-self:center">
-    <MudGrid Justify="Justify.Center" Spacing="2">
+<MudForm Model="@model" Style="margin-top: 55vh; margin-left:35vh;">      
+    <MudGrid Justify="Justify.FlexStart" Spacing="2">
+        <MudItem xs="12" md="2">
+            <MudStack>
+                <MudToggleGroup T="string" SelectionMode="SelectionMode.SingleSelection" @bind-Value="_typeValue" Color="Color.Primary" FixedContent Size="Size.Small">
+                    <MudToggleItem Value="@SD.ListingTypeBuy" Text=@SD.ListingTypeBuy />
+                    <MudToggleItem Value="@SD.ListingTypeRent" Text=@SD.ListingTypeRent />
+                </MudToggleGroup>
+            </MudStack>
+        </MudItem> 
+        <MudFlexBreak/>
         <MudItem xs="12" md="2">
             <MudAutocomplete @bind-Value="model.Area"
             SearchFunc="Search"
             Label="Περιοχή"
             Placeholder="Περιοχή"
-            Clearable="true" />
+            Clearable="true" />           
         </MudItem>
 
         <MudItem xs="7" md="2">
-            <MudInputLabel>Τιμή</MudInputLabel>
+            <MudInputLabel>
+                <MudText Typo="Typo.caption">Τιμή</MudText>
+            </MudInputLabel>
             <MudButton Variant="Variant.Text" Color="Color.Default" @onclick="TogglePriceDropdown">
                 Από - Έως
             </MudButton>
 
             <MudCollapse Expanded="showPriceDropdown">
-                <MudSelect T="double?" @bind-Value="model.LowPrice" Label="Ελάχιστη Τιμή">
-                    <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
-                    <MudSelectItem T="double?" Value="10000">10.000</MudSelectItem>
-                    <MudSelectItem T="double?" Value="20000">20.000</MudSelectItem>
-                    <MudSelectItem T="double?" Value="30000">30.000</MudSelectItem>
-                    <MudSelectItem T="double?" Value="40000">40.000</MudSelectItem>
-                </MudSelect>
+                @if (_typeValue.Equals(SD.ListingTypeBuy))
+                {
+                    <MudSelect T="double?" @bind-Value="model.LowPrice" Label="Ελάχιστη Τιμή">
+                        <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                        <MudSelectItem T="double?" Value="100000">100.000</MudSelectItem>
+                        <MudSelectItem T="double?" Value="200000">200.000</MudSelectItem>
+                        <MudSelectItem T="double?" Value="300000">300.000</MudSelectItem>
+                        <MudSelectItem T="double?" Value="400000">400.000</MudSelectItem>
+                    </MudSelect>
 
-                <MudSelect T="double?" @bind-Value="model.HighPrice" Label="Μέγιστη Τιμή">
-                    <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
-                    <MudSelectItem T="double?" Value="10000">10.000</MudSelectItem>
-                    <MudSelectItem T="double?" Value="20000">20.000</MudSelectItem>
-                    <MudSelectItem T="double?" Value="30000">30.000</MudSelectItem>
-                    <MudSelectItem T="double?" Value="40000">40.000</MudSelectItem>
-                </MudSelect>
+                    <MudSelect T="double?" @bind-Value="model.HighPrice" Label="Μέγιστη Τιμή">
+                        <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                        <MudSelectItem T="double?" Value="100000">100.000</MudSelectItem>
+                        <MudSelectItem T="double?" Value="200000">200.000</MudSelectItem>
+                        <MudSelectItem T="double?" Value="300000">300.000</MudSelectItem>
+                        <MudSelectItem T="double?" Value="400000">400.000</MudSelectItem>
+                    </MudSelect>
+                }
+                else
+                {
+                    <MudSelect T="double?" @bind-Value="model.LowPrice" Label="Ελάχιστη Τιμή">
+                        <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                        <MudSelectItem T="double?" Value="200">200</MudSelectItem>
+                        <MudSelectItem T="double?" Value="350">350</MudSelectItem>
+                        <MudSelectItem T="double?" Value="500">500</MudSelectItem>
+                        <MudSelectItem T="double?" Value="700">700</MudSelectItem>
+                    </MudSelect>
+
+                    <MudSelect T="double?" @bind-Value="model.HighPrice" Label="Μέγιστη Τιμή">
+                        <MudSelectItem T="double?" Value="@(null)">Αδιάφορο</MudSelectItem>
+                        <MudSelectItem T="double?" Value="500">500</MudSelectItem>
+                        <MudSelectItem T="double?" Value="700">700</MudSelectItem>
+                        <MudSelectItem T="double?" Value="900">900</MudSelectItem>
+                        <MudSelectItem T="double?" Value="1100">1100</MudSelectItem>
+                    </MudSelect>
+                }
             </MudCollapse>
         </MudItem>
 
         <MudItem xs="7" md="2">
-            <MudInputLabel>Εμβαδόν (τ.μ.)</MudInputLabel>
+            <MudInputLabel>
+                <MudText Typo="Typo.caption">Εμβαδόν (τ.μ.)</MudText>
+            </MudInputLabel>
             <MudButton Variant="Variant.Text" Color="Color.Transparent" @onclick="ToggleFloorAreaDropdown">
                 Από - Έως
             </MudButton>
@@ -111,6 +145,7 @@
     private List<string> _areas = SD.Areas;
     private AuthenticationState authState;
     private List<ListingDto> listings = new List<ListingDto>();
+    private string _typeValue = SD.ListingTypeBuy;
 
     private void TogglePriceDropdown()
     {
@@ -136,6 +171,7 @@
 
     private async Task HandleSubmit()
     {
+        model.ListingType = _typeValue;
         ResponseDto response = await listingService.GetFilteredListings(model);
 
         if (response != null && response.IsSuccess)

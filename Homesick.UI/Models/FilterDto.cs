@@ -7,6 +7,7 @@
         public int? FloorAreaLow { get; set; }
         public int? FloorAreaHigh { get; set; }
         public string? Area { get; set; }
+        public string? ListingType { get; set; }
 
     }
 }

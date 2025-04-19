@@ -10,7 +10,6 @@
         public const string RoleCustomer = "Πελάτης";
 
         //LISTING STATUS
-        public const string StatusCreated = "Αρχικό";
         public const string StatusInReview = "Υπό Επεξεργασία";
         public const string StatusApproved = "Εγκεκριμένη";
 

@@ -40,7 +40,7 @@ namespace Homesick.UI.Pages.Auth
             }
         }
 
-        private async Task DeleteServerAsync(ListingDto listing)
+        private async Task DeleteItemAsync(ListingDto listing)
         {
             var parameters = new DialogParameters<ConfirmationDialog> { { x => x.Listing, listing } };
 
@@ -53,7 +53,7 @@ namespace Homesick.UI.Pages.Auth
                 if (response.IsSuccess)
                 {
                     Snackbar.Add("Η αγγελία διαγράφηκε επιτυχώς!", Severity.Success);
-                    StateHasChanged();
+                    listings.Remove(listing);
                 }
                 else
                 {

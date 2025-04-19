@@ -21,7 +21,13 @@
             <CellTemplate>
                 @if (context.Item.Status == SD.StatusInReview)
                 {
-                    <MudButton Size="@Size.Small" OnClick="() => ApproveListing(context.Item.ListingId)" Color="Color.Primary">Έγκριση</MudButton>
+                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                        <MudButton>Διαχείριση</MudButton>
+                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Style="align-self: auto;">
+                            <MudMenuItem OnClick="() => ApproveListing(context.Item.ListingId)" Color="Color.Primary">Έγκριση</MudMenuItem>
+                            <MudMenuItem OnClick="() => DeleteItemAsync(context.Item)">Απόρριψη</MudMenuItem>                            
+                        </MudMenu>
+                    </MudButtonGroup>
                 }
             </CellTemplate>
         </TemplateColumn>
@@ -50,11 +56,33 @@
         if (response != null && response.IsSuccess)
         {
             Snackbar.Add("Listing approved successfully", Severity.Success);
-            StateHasChanged();            
+            listings.RemoveAll(l => l.ListingId == id);
         }
         else
         {
             Snackbar.Add("Error approving listing", Severity.Error);
+        }
+    }
+
+    private async Task DeleteItemAsync(ListingDto listing)
+    {
+        var parameters = new DialogParameters<ConfirmationDialog> { { x => x.Listing, listing } };
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Διαγραφή Αγγελίας", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            ResponseDto response = await listingService.DeleteListing(listing.ListingId);
+            if (response.IsSuccess)
+            {
+                Snackbar.Add("Η αγγελία διαγράφηκε επιτυχώς!", Severity.Success);
+                listings.Remove(listing);
+            }
+            else
+            {
+                Snackbar.Add("Η διαγραφή απέτυχε!", Severity.Error);
+            }
         }
     }
 

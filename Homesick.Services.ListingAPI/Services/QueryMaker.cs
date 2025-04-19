@@ -3,6 +3,7 @@ using Homesick.Services.ListingAPI.Data;
 using Homesick.Services.ListingAPI.Models;
 using Homesick.Services.ListingAPI.Models.DTO;
 using Homesick.Services.ListingAPI.Services.IService;
+using Homesick.Services.ListingAPI.Utility;
 
 namespace Homesick.Services.ListingAPI.Services
 {
@@ -17,24 +18,29 @@ namespace Homesick.Services.ListingAPI.Services
             _mapper = mapper;
         }
 
-        public IQueryable<House> MakeQuery(FilterDto filter)
+        public IQueryable<Listing> MakeQuery(FilterDto filter)
         {
-            var query = _db.Houses.AsQueryable();
+            IQueryable<Listing> query = _db.Listings.AsQueryable();
+
+            query = query.Where(l=> l.Status == SD.StatusApproved);
 
             if (filter.LowPrice.HasValue)
-                query = query.Where(h => h.Price >= filter.LowPrice);
+                query = query.Where(h => h.House.Price >= filter.LowPrice);
 
             if (filter.HighPrice.HasValue)
-                query = query.Where(h => h.Price <= filter.HighPrice);
+                query = query.Where(h => h.House.Price <= filter.HighPrice);
 
             if (!string.IsNullOrEmpty(filter.Area))
-                query = query.Where(h => h.Area == filter.Area);
+                query = query.Where(h => h.House.Area == filter.Area);
+
+            if (!string.IsNullOrEmpty(filter.ListingType))
+                query = query.Where(l => l.ListingType == filter.ListingType);
 
             if (filter.FloorAreaHigh.HasValue)
-                query = query.Where(h => h.FloorArea <= filter.FloorAreaHigh);
+                query = query.Where(h => h.House.FloorArea <= filter.FloorAreaHigh);
 
             if (filter.FloorAreaLow.HasValue)
-                query = query.Where(h => h.FloorArea >= filter.FloorAreaLow);
+                query = query.Where(h => h.House.FloorArea >= filter.FloorAreaLow);
 
             return query;
         }

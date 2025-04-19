@@ -5,6 +5,6 @@ namespace Homesick.Services.ListingAPI.Services.IService
 {
     public interface IQueryMaker
     {
-        IQueryable<House> MakeQuery(FilterDto filter);
+        IQueryable<Listing> MakeQuery(FilterDto filter);
     }
 }

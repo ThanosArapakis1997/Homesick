@@ -82,14 +82,9 @@ else
                     <MudCardContent>
                         <MudGrid>
                             <MudItem xs="12" sm="6">
-                                <MudCarousel Style="height:300px; width:300px;" AutoCycle="false" TData="object">
-                                    @foreach (ImageDto image in item.House.Images)
-                                    {
-                                        <MudCarouselItem Class="aspect-ratio-container">
-                                            <MudImage Src="@image.Data" ObjectFit="ObjectFit.Contain" Class="aspect-ratio-image" />
-                                        </MudCarouselItem>
-                                    }
-                                </MudCarousel>
+                                    <MudCard Elevation="5" Class="h-100">
+                                        <MudCardMedia Image="@item.House.Images.FirstOrDefault()?.Data" Height="250" />                                        
+                                    </MudCard>
                             </MudItem>
                             <MudItem xs="12" sm="6" Class="pl-4">
                                 <MudText Typo="Typo.h5">@item.House.Name</MudText>

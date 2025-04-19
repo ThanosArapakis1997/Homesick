@@ -58,7 +58,7 @@
                                         </MudCardContent>
                                         <MudCardActions>
                                         <MudIconButton Icon="@Icons.Material.Rounded.Edit" Href=@($"/listing/edit/{item.ListingId}")></MudIconButton>
-                                        <MudIconButton Icon="@Icons.Material.Rounded.Delete" OnClick="@((e) => DeleteServerAsync(item))"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Rounded.Delete" OnClick="@((e) => DeleteItemAsync(item))"></MudIconButton>
                                         </MudCardActions>
                                     </MudCard>
                                 </MudItem>
