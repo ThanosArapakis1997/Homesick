@@ -8,7 +8,7 @@
     <MudSpacer />
     @if (authState is not null && authState.User.Identity?.IsAuthenticated == true)
     {
-        <MudButton Variant="Variant.Outlined" Href="/listing/create">Καταχώριση Αγγελίας</MudButton>
+        <MudButton Variant="Variant.Outlined" Href="/listing/create">Καταχώρηση Αγγελίας</MudButton>
         <MudMenu Dense Variant="Variant.Text" Size="Size.Large" Color="Color.Inherit" Icon="@Icons.Material.Filled.Face4">
 
             @if (role.Equals(SD.RoleCustomer, StringComparison.CurrentCultureIgnoreCase))
