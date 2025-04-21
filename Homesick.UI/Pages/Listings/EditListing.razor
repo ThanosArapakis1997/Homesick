@@ -4,7 +4,7 @@
 
     <!-- Image Carousel -->
         <MudContainer MaxWidth="MaxWidth.Large" Style="max-width: 1000px; margin: auto;">
-            <MudCarousel Style="height:400px; width:900px;" ShowArrows="true" AutoCycle="false" TData="object">
+        <MudCarousel Style="height:400px; width:900px;" ShowArrows="true" AutoCycle="false" TData="object" BulletsColor="Color.Info">
                 @if (listing.House?.Images?.Any() == true)
                 {
                     @foreach (ImageDto image in listing.House.Images)

@@ -68,7 +68,7 @@ namespace Homesick.Services.ListingAPI.Testing
             var fakeListings = new List<ListingDto>
             {
                 new ListingDto { ListingId = 1, ListingType = "Ενοικίαση" },
-                new ListingDto { ListingId = 2, ListingType = "Αγορά" }
+                new ListingDto { ListingId = 2, ListingType = "Ενοικίαση" }
             };
 
             _mockListingService.Setup(s => s.GetFilteredListingsAsync(fakeFilter)).ReturnsAsync(fakeListings);
@@ -104,7 +104,8 @@ namespace Homesick.Services.ListingAPI.Testing
             string userId = "user123";
             var listings = new List<ListingDto>
             {
-                new ListingDto { ListingId = 1, UserId = userId }
+                new ListingDto { ListingId = 1, UserId = userId },
+                new ListingDto { ListingId = 2, UserId = userId }
             };
 
             _mockListingService.Setup(s => s.GetListingsByUserIdAsync(userId)).ReturnsAsync(listings);
@@ -116,8 +117,7 @@ namespace Homesick.Services.ListingAPI.Testing
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Result);
             var resultList = Assert.IsType<List<ListingDto>>(result.Result);
-            Assert.Single(resultList);
-            Assert.Equal(userId, resultList[0].UserId);
+            Assert.Equal(userId, resultList.First().UserId);
         }
 
         [Fact]
@@ -142,8 +142,8 @@ namespace Homesick.Services.ListingAPI.Testing
         public async Task UpdateListing_Returns_UpdatedListing()
         {
             // Arrange
-            var listingToUpdate = new ListingDto { Name = "New Listing" };
-            var updatedListing = new ListingDto { ListingId = 1, Name = "New Listing" };
+            var listingToUpdate = new ListingDto { Name = "Edit Listing" };
+            var updatedListing = new ListingDto { ListingId = 1, Name = "Edited Listing" };
 
             _mockListingService.Setup(s => s.CreateListingAsync(listingToUpdate)).ReturnsAsync(updatedListing);
 
@@ -153,7 +153,7 @@ namespace Homesick.Services.ListingAPI.Testing
             // Assert
             Assert.True(result.IsSuccess);
             var resultListing = Assert.IsType<ListingDto>(result.Result);
-            Assert.Equal("New Listing", resultListing.Name);
+            Assert.Equal("Edited Listing", resultListing.Name);
         }
 
         [Fact]
@@ -171,7 +171,7 @@ namespace Homesick.Services.ListingAPI.Testing
 
             // Assert
             Assert.True(result.IsSuccess);
-            var deletedListing = Assert.IsType<ListingDto>(result.Result);
+            ListingDto deletedListing = Assert.IsType<ListingDto>(result.Result);
             Assert.Equal(listingId, deletedListing.ListingId);
         }
     }

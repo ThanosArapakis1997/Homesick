@@ -13,7 +13,7 @@
             <MudPaper Style="width: 1300px">
                 <MudStepper @bind-ActiveIndex="_index" ShowResetButton="true">
                     <ChildContent>
-                        <MudStep Title="Κατηγορία Ακινήτου" SecondaryText="Κατοικία, Διαμέρισμα, Ενοικίαση" Skippable="false" CompletedChanged="@(()=> progress = 20)">
+                        <MudStep Title="Κατηγορία Ακινήτου" SecondaryText="Κατοικία, Διαμέρισμα, Ενοικίαση" Skippable="false" CompletedChanged="AfterStep1">
                             <MudPaper Class="pa-4">
                                     <MudText Typo="Typo.button">Κατηγορία Ακινήτου</MudText>
                                     <MudRadioGroup T="string" @bind-Value="model.PropertyType">
@@ -62,8 +62,8 @@
                                     <MudText Typo="Typo.button">Τίτλος Ακινήτου</MudText>
                                     <MudTextField Variant="Variant.Text" Placeholder="Τίτλος" Required="true" RequiredError="Ο τίτλος ακινήτου είναι υποχρεωτικός" @bind-Value="model.Name" />
                                     <br />
-                                    <MudText Typo="Typo.button">Τιμή Ακινήτου</MudText>
-                                    <MudNumericField Variant="Variant.Text" Placeholder="€/μήνα" @bind-Value="model.Price" />
+                                    <MudText Typo="Typo.button">@priceLabel</MudText>
+                                    <MudNumericField Variant="Variant.Text" Placeholder="@priceLabel" @bind-Value="model.Price" />
                                     <br />
                                     <MudText Typo="Typo.button">Εμβαδόν Ακινήτου</MudText>
                                     <MudNumericField Variant="Variant.Text" Placeholder="τ.μ" @bind-Value="model.FloorArea" />

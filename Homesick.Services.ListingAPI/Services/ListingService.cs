@@ -3,6 +3,7 @@ using Homesick.Services.ListingAPI.Data;
 using Homesick.Services.ListingAPI.Models;
 using Homesick.Services.ListingAPI.Models.DTO;
 using Homesick.Services.ListingAPI.Services.IService;
+using Homesick.Services.ListingAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 
 namespace Homesick.Services.ListingAPI.Services
@@ -23,6 +24,7 @@ namespace Homesick.Services.ListingAPI.Services
         public async Task<List<ListingDto>> GetAllListings()
         {
             var listings = await _db.Listings
+                .Where(l => l.Status == SD.StatusInReview)
                 .Include(l => l.House)
                 .ThenInclude(h => h.Images) // Include images if needed
                 .ToListAsync();

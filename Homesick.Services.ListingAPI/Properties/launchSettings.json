@@ -30,6 +30,8 @@
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
+      "containerName": "Homesick.ListingAPI",
+      "containerRunArguments": "-p 7002:8081",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {

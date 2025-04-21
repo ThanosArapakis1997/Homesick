@@ -11,6 +11,7 @@ using System.IO;
 using Homesick.UI.Utility;
 using System.Xml.Linq;
 using Homesick.UI.Layout;
+using System.Runtime.CompilerServices;
 
 namespace Homesick.UI.Pages.Listings
 {
@@ -31,12 +32,25 @@ namespace Homesick.UI.Pages.Listings
         public int count = 0;
         bool success = false;
         List<string> errors = new List<string>();
-
+        public string priceLabel = "Τιμή Ακινήτου";
+        
         protected override async Task OnInitializedAsync()
         {
             authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             listing.UserId = authState.User.FindFirst("sub").Value;
             listing.Email = authState.User.FindFirst("email").Value;
+        }
+
+        private async void AfterStep1()
+        {
+            if (listing.ListingType == SD.ListingTypeRent)
+            {
+                priceLabel = "Τιμή / Μήνα";
+            }
+            else
+            {
+                priceLabel = "Τιμή Ακινήτου";
+            }
         }
 
         private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
