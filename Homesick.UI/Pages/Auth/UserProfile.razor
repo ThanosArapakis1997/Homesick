@@ -45,6 +45,14 @@
                                     <MudCard Elevation="5" Class="h-100">
                                         <MudCardMedia Image="@item.House.Images.FirstOrDefault()?.Data" Height="300" />
                                         <MudCardContent>
+                                            @if (item.ListingType == SD.ListingTypeRent)
+                                            {
+                                                <MudChip T="string" Color="Color.Warning" Size="Size.Small">Ενοικίαση</MudChip>
+                                            }
+                                            else
+                                            {
+                                                <MudChip T="string" Color="Color.Error" Size="Size.Small">Αγορά</MudChip>
+                                            }
                                             <MudText Typo="Typo.h6" Class="mb-2">@item.House.Name</MudText>
                                             <MudText Typo="Typo.body2" Color="Color.Dark" Class="mb-3">@item.House.Area</MudText>
                                             <br />

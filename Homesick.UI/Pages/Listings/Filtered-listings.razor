@@ -74,8 +74,42 @@
 }
 else
 {
+    <MudPaper Elevation="3" Class="pa-6 rounded-2xl d-flex flex-column" Style="background-color:lightgray">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudItem xs="12" sm="10">
+                @if (listingData.FirstOrDefault().ListingType == SD.ListingTypeRent)
+                {
+                    <MudText Typo="Typo.h5">Ενοικιάσεις Κατοικιών</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h5">Πωλήσεις Κατοικιών</MudText>
+                }
+            </MudItem>
+            <MudItem xs="12" sm="5">
+                <MudStack Row="true">
+                    <MudText Typo="Typo.subtitle1">@listingData.Count Αποτελέσματα</MudText>
+                    <MudSpacer />
+                    @if (listingData.FirstOrDefault().ListingType == SD.ListingTypeRent)
+                    {
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="ChangeToSale">
+                            <MudIcon Icon="@Icons.Material.Filled.Refresh" /> Αλλαγή σε Αγορά
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="ChangeToRent">
+                            <MudIcon Icon="@Icons.Material.Filled.Refresh" /> Αλλαγή σε Ενοικίαση
+                        </MudButton>
+                    }
+                    
+                </MudStack>
+            </MudItem>
+
+    </MudGrid>
+    <br />
     <MudGrid>
-        <MudItem xs="12" sm="5">
+        <MudItem xs="6" sm="5">
             @foreach (ListingDto item in PageListings)
             {
                 <MudCard Class="mb-4">
@@ -88,6 +122,7 @@ else
                             </MudItem>
                             <MudItem xs="12" sm="6" Class="pl-4">
                                 <MudText Typo="Typo.h5">@item.House.Name</MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Dark" Class="mb-3">@item.House.Area</MudText>
                                 <div style="max-height:220px; overflow:hidden; text-overflow: ellipsis;">
                                     <MudText Typo="Typo.body2" Style="display:-webkit-box; -webkit-line-clamp:10; -webkit-box-orient:vertical; overflow:hidden;">
                                         @item.House.Description
@@ -111,77 +146,15 @@ else
             }
         </MudItem>
 
+        @* <MudItem xs="6" sm="2" >
+            <MudText Typo="Typo.h4" Align="Align.Center">Χάρτης Coming Soon</MudText>
+        </MudItem> *@
+
         <MudFlexBreak />
 
         <MudItem xs="12" sm="12">
             <MudPagination Color="Color.Primary" Count="@TotalPages" @bind-Selected="@_selected" />
         </MudItem>
     </MudGrid>
-
-}
-
-@code {
-    private List<ListingDto>? listingData;
-    private FilterDto model = new FilterDto();
-    private bool showPriceDropdown = false;
-    private bool showFloorAreaDropdown = false;
-    private bool _loading = true;
-    private List<string> _areas = SD.Areas;
-
-    private Transition transition = Transition.Slide;
-    private int _selected = 1; // τρέχουσα σελίδα
-    private int _pageSize = 3;
-
-    private IEnumerable<ListingDto> PageListings => listingData
-        .Skip((_selected - 1) * _pageSize)
-        .Take(_pageSize);
-
-    private int TotalPages => (int)Math.Ceiling((double)listingData.Count / _pageSize);
-
-    protected override async Task OnInitializedAsync()
-    {        
-        listingData = await FilteredListingsService.GetListingsData();
-
-        if (listingData == null)
-        {
-            Snackbar.Add("Δεν βρέθηκαν αγγελίες με αυτά τα κριτήρια", Severity.Normal);
-        }
-    }
-
-    private void TogglePriceDropdown()
-    {
-        showPriceDropdown = !showPriceDropdown;
-    }
-
-    private void ToggleFloorAreaDropdown()
-    {
-        showFloorAreaDropdown = !showFloorAreaDropdown;
-    }
-
-    private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
-    {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5, token);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return _areas;
-
-        return _areas.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-    }
-
-    private async Task HandleSubmit()
-    {
-        ResponseDto response = await listingService.GetFilteredListings(model);
-
-        if (response != null && response.IsSuccess)
-        {
-            listingData = JsonConvert.DeserializeObject<List<ListingDto>>(Convert.ToString(response.Result));
-           
-        }
-        else
-        {
-            Snackbar.Add(response?.Message ?? "An error occurred", Severity.Warning);
-        }
-    }
+</MudPaper>
 }
