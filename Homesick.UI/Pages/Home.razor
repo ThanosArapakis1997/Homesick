@@ -123,7 +123,13 @@
                             <MudCardContent>
                                 <MudText Typo="Typo.h6" Class="mb-2">@item.House.Name</MudText>
                                 <MudText Typo="Typo.body2" Color="Color.Dark" Class="mb-3">@item.House.Area</MudText>
-                                <MudText Typo="Typo.body2" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <MudText Typo="Typo.body2" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
+                                    @if (item.ListingType == SD.ListingTypeRent)
+                                    {
+                                        <MudText Typo="Typo.subtitle2" Color="Color.Primary"> / μήνα</MudText>
+                                    }
+                                </div>
                             </MudCardContent>
                             <MudCardActions>
                                 <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" Href=@($"/listing/preview/{item.ListingId}") Class="ml-auto">Λεπτομέρειες</MudButton>

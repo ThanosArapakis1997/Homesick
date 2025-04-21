@@ -54,7 +54,13 @@
                                                 <MudIcon Icon="@Icons.Material.Filled.Layers" Class="ml-4" />
                                                 <MudText>@item.House.Floor Ορ.</MudText>
                                             </MudStack>
-                                            <MudText Typo="Typo.h6" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <MudText Typo="Typo.h6" Color="Color.Primary">@item.House.Price.ToString("C")</MudText>
+                                                @if (item.ListingType == SD.ListingTypeRent)
+                                                {
+                                                    <MudText Typo="Typo.subtitle1" Color="Color.Primary"> / μήνα</MudText>
+                                                }
+                                            </div>
                                         </MudCardContent>
                                         <MudCardActions>
                                         <MudIconButton Icon="@Icons.Material.Rounded.Edit" Href=@($"/listing/edit/{item.ListingId}")></MudIconButton>

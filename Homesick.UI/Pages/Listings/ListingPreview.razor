@@ -20,8 +20,13 @@
 
     <MudText Typo="Typo.h4" Class="mt-4">@house.Name</MudText>
     <MudText Typo="Typo.subtitle1">@house.Address, @house.Area, @house.City</MudText>
-    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mt-2">€@house.Price</MudText>
-
+    <div style="display: flex; gap: 0.5rem;">
+        <MudText Typo="Typo.h6" Color="Color.Primary">@house.Price.ToString("C")</MudText>
+        @if (listing.ListingType == SD.ListingTypeRent)
+        {
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary"> / μήνα</MudText>
+        }
+    </div>
     <MudGrid Class="mt-4">
         <MudItem xs="6" sm="3">
             <MudText Typo="Typo.subtitle2">Εμβαδόν</MudText>
