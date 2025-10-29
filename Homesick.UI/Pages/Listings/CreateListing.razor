@@ -1,4 +1,7 @@
 ﻿@page "/listing/create"
+@inject IStreamService StreamService
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
 
 <MudForm @ref="form">
     <MudGrid>
@@ -152,3 +155,142 @@
         </MudItem>      
     </MudGrid>
 </MudForm>
+
+
+                                <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudPaper Elevation="3" Class="pa-4" Style="height: 85vh; display: flex; flex-direction: column;">
+
+        <!-- Header -->
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudIcon Icon="@Icons.Material.Filled.SmartToy" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h5">Virtual Assistant</MudText>
+            </MudStack>
+
+            <MudStack Row="true" Spacing="2">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="ClearChat"
+                               Title="Clear Chat" />
+
+                @if (_isLoading)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Stop"
+                                   Color="Color.Warning"
+                                   Variant="Variant.Filled"
+                                   Size="Size.Small"
+                                   OnClick="StopGeneration"
+                                   Title="Stop Generation" />
+                }
+            </MudStack>
+        </MudStack>
+
+        <MudDivider Class="mb-4" />
+
+        <!-- Messages -->
+        <MudPaper id="messages-container"
+                  Elevation="0"
+                  Class="flex-grow-1 overflow-y-auto mb-4 pa-3"
+                  Style="background-color:#f5f5f5;">
+
+            @if (_messages.Count == 0)
+            {
+                <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="height:100%;">
+                    <MudIcon Icon="@Icons.Material.Filled.Chat" Size="Size.Large" Color="Color.Secondary" />
+                    <MudText Typo="Typo.h6" Color="Color.Secondary">Start a conversation</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Ask me anything!</MudText>
+                </MudStack>
+            }
+            else
+            {
+                @foreach (var message in _messages)
+                {
+                    <div style="display:flex; justify-content:@(message.IsUser ? "flex-end" : "flex-start"); margin-bottom:16px; align-items:flex-start;">
+
+                        @if (!message.IsUser)
+                        {
+                            <MudAvatar Color="Color.Primary" Size="Size.Small" Class="mr-2" Style="flex-shrink:0;">
+                                <MudIcon Icon="@Icons.Material.Filled.SmartToy" Size="Size.Small" />
+                            </MudAvatar>
+                        }
+
+                        <MudPaper Elevation="1"
+                                  Class="pa-3"
+                                  Style="max-width:75%; border-radius:12px;">
+
+                            <MudText Typo="Typo.body1" Style="white-space:pre-wrap; word-wrap:break-word; line-height:1.6;">
+                                @message.Text
+                            </MudText>
+
+                            @if (!message.IsUser && message.IsStreaming)
+                            {
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mt-2" Size="Size.Small" />
+                            }
+
+                            @if (!string.IsNullOrEmpty(message.Sources))
+                            {
+                                <MudDivider Class="my-2" />
+                                <MudText Typo="Typo.caption" Style="color:#666;">
+                                    <MudIcon Icon="@Icons.Material.Filled.Source" Size="Size.Small" Style="vertical-align:middle;" />
+                                    Sources: @message.Sources
+                                </MudText>
+                            }
+
+                            <MudText Typo="Typo.caption"
+                                     Style="@(message.IsUser ? "color:rgba(255,255,255,0.8);" : "color:#999;")"
+                                     Class="mt-2">
+                                @message.Timestamp.ToString("HH:mm")
+                            </MudText>
+                        </MudPaper>
+
+                        @if (message.IsUser)
+                        {
+                            <MudAvatar Color="Color.Secondary" Size="Size.Small" Class="ml-2" Style="flex-shrink:0;">
+                                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
+                            </MudAvatar>
+                        }
+                    </div>
+                }
+            }
+        </MudPaper>
+
+        <!-- Input field -->
+        <MudPaper Elevation="0" Class="pa-3"
+                  Style="background-color:white; border-radius:12px; border:1px solid #e0e0e0;">
+            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+
+                <MudTextField @bind-Value="_inputMessage"
+                              Placeholder="Type your message..."
+                              Variant="Variant.Text"
+                              Lines="1"
+                              MaxLines="4"
+                              Disabled="_isLoading"
+                              OnKeyDown="HandleKeyDown"
+                              Class="flex-grow-1"
+                              Immediate="true" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.Send"
+                               Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               Size="Size.Large"
+                               Disabled="_isLoading || string.IsNullOrWhiteSpace(_inputMessage)"
+                               OnClick="SendMessage"
+                               Style="border-radius:50%;" />
+
+            </MudStack>
+        </MudPaper>
+
+        @if (_error != null)
+        {
+            <MudAlert Severity="Severity.Error"
+                      Class="mt-2"
+                      Elevation="2"
+                      CloseIcon="@Icons.Material.Filled.Close"
+                      CloseIconClicked="() => _error = null">
+                @_error
+            </MudAlert>
+        }
+    </MudPaper>
+</MudContainer>

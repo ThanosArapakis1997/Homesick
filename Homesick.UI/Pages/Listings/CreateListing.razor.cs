@@ -1,17 +1,19 @@
-﻿using Homesick.UI.Models;
+﻿using Homesick.UI.Layout;
+using Homesick.UI.Models;
+using Homesick.UI.Service;
+using Homesick.UI.Utility;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.JSInterop;
 using MudBlazor;
-using Microsoft.AspNetCore.Components;
 using System.Diagnostics.Tracing;
 using System.IO;
-using Homesick.UI.Utility;
-using System.Xml.Linq;
-using Homesick.UI.Layout;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 
 namespace Homesick.UI.Pages.Listings
 {
@@ -33,7 +35,170 @@ namespace Homesick.UI.Pages.Listings
         bool success = false;
         List<string> errors = new List<string>();
         public string priceLabel = "Τιμή Ακινήτου";
-        
+
+        private List<ChatMessage> _messages = new();
+        private string _inputMessage = string.Empty;
+        private bool _isLoading = false;
+        private string? _error = null;
+        private CancellationTokenSource? _cancellationTokenSource;
+        private IJSObjectReference? _jsModule;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                try
+                {
+                    _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/chat.js");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to load JS module: {ex.Message}");
+                }
+            }
+        }
+
+        private async Task HandleKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter" && !e.ShiftKey && !_isLoading)
+                await SendMessage();
+        }
+
+        private async Task SendMessage()
+        {
+            if (string.IsNullOrWhiteSpace(_inputMessage) || _isLoading)
+                return;
+
+            var userMessage = _inputMessage.Trim();
+            _inputMessage = string.Empty;
+            _error = null;
+
+            _messages.Add(new ChatMessage
+            {
+                Text = userMessage,
+                IsUser = true,
+                Timestamp = DateTime.Now
+            });
+
+            var assistantMessage = new ChatMessage
+            {
+                IsUser = false,
+                IsStreaming = true,
+                Timestamp = DateTime.Now
+            };
+
+            _messages.Add(assistantMessage);
+
+            _isLoading = true;
+            StateHasChanged();
+            await ScrollToBottom();
+
+            try
+            {
+                _cancellationTokenSource = new CancellationTokenSource();
+                var requestDto = new RequestDto
+                {
+                    Url = SD.AgentAPIBase + "/stream",
+                    Data = new { prompt = userMessage }
+                };
+
+                await foreach (var response in StreamService.SendAsync(requestDto, _cancellationTokenSource.Token))
+                {
+                    if (response != null)
+                    {
+
+                        if (!string.IsNullOrEmpty(response.Token))
+                        {
+                            assistantMessage.Text += response.Token;
+
+                            await InvokeAsync(StateHasChanged);
+
+                            if (assistantMessage.Text.Length % 50 == 0)
+                                await ScrollToBottom();
+
+                            await Task.Yield();
+                        }
+
+                        if (response.Done)
+                        {
+                            assistantMessage.IsStreaming = false;
+                           
+
+                            StateHasChanged();
+                            await ScrollToBottom();
+                            break;
+                        }
+                    }
+                }
+                assistantMessage.IsStreaming = false;
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (OperationCanceledException)
+            {
+                assistantMessage.Text += "\n\n[Generation stopped]";
+                assistantMessage.IsStreaming = false;
+            }
+            catch (HttpRequestException ex)
+            {
+                _error = $"Connection error: {ex.Message}";
+                _messages.Remove(assistantMessage);
+            }
+            catch (Exception ex)
+            {
+                _error = $"Error: {ex.Message}";
+                _messages.Remove(assistantMessage);
+            }
+            finally
+            {
+                _isLoading = false;
+                _cancellationTokenSource?.Dispose();
+                _cancellationTokenSource = null;
+                StateHasChanged();
+            }
+        }
+
+        private async Task ScrollToBottom()
+        {
+            if (_jsModule != null)
+            {
+                try
+                {
+                    await _jsModule.InvokeVoidAsync("chatHelpers.scrollToBottomSmooth", "messages-container");
+                }
+                catch { }
+            }
+        }
+
+        private void StopGeneration() => _cancellationTokenSource?.Cancel();
+
+        private void ClearChat()
+        {
+            _messages.Clear();
+            _error = null;
+            StateHasChanged();
+        }
+
+        public string GetMessageStyle(bool isUser) =>
+            isUser ? "background-color:#1976d2; color:white;" : "background-color:white; color:#333;";
+
+        public async ValueTask DisposeAsync()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+
+            if (_jsModule != null)
+                await _jsModule.DisposeAsync();
+        }
+
+        private class ChatMessage
+        {
+            public string Text { get; set; } = string.Empty;
+            public bool IsUser { get; set; }
+            public bool IsStreaming { get; set; }
+            public DateTime Timestamp { get; set; }
+            public string? Sources { get; set; }
+        }
+
         protected override async Task OnInitializedAsync()
         {
             authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -182,6 +347,6 @@ namespace Homesick.UI.Pages.Listings
             if (count > 0) return false;
 
             return true;
-        }        
+        }      
     }
 }

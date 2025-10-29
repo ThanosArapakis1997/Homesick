@@ -4,6 +4,7 @@
     {
         public static string AuthAPIBase { get; set; }
         public static string ListingAPIBase { get; set; }
+        public static string AgentAPIBase { get; set; }
 
         //ROLES
         public const string RoleAdmin = "Διαχειριστής";

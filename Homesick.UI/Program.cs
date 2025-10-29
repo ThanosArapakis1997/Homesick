@@ -23,10 +23,12 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
         builder.Services.AddHttpClient<IListingService, ListingService>();
+        builder.Services.AddHttpClient<IAgentService, AgentService>();
 
         builder.Services.AddScoped<IBaseService, BaseService>();
         builder.Services.AddScoped<IListingService, ListingService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IStreamService, StreamService>();
 
         // Register CustomAuthStateProvider correctly
         builder.Services.AddScoped<CustomAuthStateProvider>(); // Explicit registration
@@ -42,6 +44,7 @@ public class Program
 
         SD.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"];
         SD.ListingAPIBase = builder.Configuration["ServiceUrls:ListingAPI"];
+        SD.AgentAPIBase = builder.Configuration["ServiceUrls:AgentAPI"];
 
         await builder.Build().RunAsync();
     }
